@@ -1,5 +1,5 @@
 defmodule FinhubWeb.PageControllerTest do
-  use FinhubWeb.ConnCase
+  use FinhubWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")

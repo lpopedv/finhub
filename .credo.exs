@@ -183,6 +183,11 @@
              include_defp: false,
              files: %{
                excluded: [
+                 ~r"apps/finhub_web/lib/finhub_web\.ex$",
+                 ~r"apps/finhub_web/lib/finhub_web/components/",
+                 ~r"apps/finhub_web/lib/finhub_web/controllers/",
+                 ~r"apps/finhub_web/lib/finhub_web/telemetry\.ex$",
+                 ~r"apps/finhub_web/lib/finhub_web/application\.ex$"
                ]
              }
            ]},
