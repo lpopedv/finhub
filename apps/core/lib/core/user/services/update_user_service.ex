@@ -12,11 +12,11 @@ defmodule Core.User.Services.UpdateUserService do
   @spec execute(String.t(), map()) ::
           {:ok, User.t()} | {:error, :not_found} | {:error, Ecto.Changeset.t()}
   def execute(id, params) do
-    with {:ok, user} <- get_user(id) do
-      user
-      |> User.changeset(params)
-      |> Repo.update()
-    end
+    with {:ok, user} <- get_user(id),
+         do:
+           user
+           |> User.changeset(params)
+           |> Repo.update()
   end
 
   defp get_user(id) do
