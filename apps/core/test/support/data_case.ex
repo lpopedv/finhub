@@ -27,6 +27,7 @@ defmodule Core.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Core.DataCase
+      import Core.Factory
     end
   end
 

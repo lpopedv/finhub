@@ -23,6 +23,9 @@ config :finhub_web, FinhubWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warning
 
+# Speed up Argon2 hashing in tests
+config :argon2_elixir, t_cost: 1, m_cost: 8
+
 # In test we don't send emails
 config :core, Core.Mailer, adapter: Swoosh.Adapters.Test
 
