@@ -37,7 +37,7 @@ defmodule Core.Schemas.ValidatorsTest do
         changeset = email_changeset(unquote(email))
 
         refute changeset.valid?
-        assert {"has invalid format", _} = changeset.errors[:email]
+        assert {"has invalid format", _opts} = changeset.errors[:email]
       end
     end
 
