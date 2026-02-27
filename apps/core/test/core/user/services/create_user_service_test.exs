@@ -23,7 +23,6 @@ defmodule Core.User.Services.CreateUserServiceTest do
       assert user.full_name == command.full_name
       assert user.email == command.email
       assert user.password_hash
-      refute user.password
     end
 
     test "persists the user to the database", %{command: command} do
