@@ -42,9 +42,7 @@ defmodule Core.Schemas.UserTest do
     end
 
     test "returns error when email is not unique", %{required_params: params} do
-      %User{}
-      |> User.changeset(params)
-      |> Repo.insert!()
+      insert(:user, email: params.email)
 
       assert {:error, changeset} =
                %User{}
@@ -91,12 +89,9 @@ defmodule Core.Schemas.UserTest do
     end
 
     test "does not require password when updating existing user with password_hash", %{
-      required_params: params
+      required_params: _params
     } do
-      {:ok, user} =
-        %User{}
-        |> User.changeset(params)
-        |> Repo.insert()
+      user = insert(:user)
 
       update_params = %{full_name: "Updated Name"}
       changeset = User.changeset(user, update_params)

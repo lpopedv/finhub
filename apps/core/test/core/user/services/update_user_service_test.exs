@@ -1,20 +1,10 @@
 defmodule Core.User.Services.UpdateUserServiceTest do
   use Core.DataCase, async: true
 
-  alias Core.Schemas.User
   alias Core.User.Services.UpdateUserService
 
   setup do
-    user =
-      %User{}
-      |> User.changeset(%{
-        full_name: "John Doe",
-        email: "john@example.com",
-        password: "password123"
-      })
-      |> Repo.insert!()
-
-    %{user: user}
+    %{user: insert(:user)}
   end
 
   describe "execute/2" do
@@ -40,15 +30,9 @@ defmodule Core.User.Services.UpdateUserServiceTest do
     end
 
     test "returns error when email is already taken", %{user: user} do
-      %User{}
-      |> User.changeset(%{
-        full_name: "Other User",
-        email: "other@example.com",
-        password: "password123"
-      })
-      |> Repo.insert!()
+      other = insert(:user)
 
-      assert {:error, changeset} = UpdateUserService.execute(user.id, %{email: "other@example.com"})
+      assert {:error, changeset} = UpdateUserService.execute(user.id, %{email: other.email})
       assert "has already been taken" in errors_on(changeset).email
     end
   end

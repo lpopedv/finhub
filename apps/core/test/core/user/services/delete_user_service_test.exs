@@ -5,16 +5,7 @@ defmodule Core.User.Services.DeleteUserServiceTest do
   alias Core.User.Services.DeleteUserService
 
   setup do
-    user =
-      %User{}
-      |> User.changeset(%{
-        full_name: "John Doe",
-        email: "john@example.com",
-        password: "password123"
-      })
-      |> Repo.insert!()
-
-    %{user: user}
+    %{user: insert(:user)}
   end
 
   describe "execute/1" do
