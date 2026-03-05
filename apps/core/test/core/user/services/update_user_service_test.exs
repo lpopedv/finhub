@@ -26,7 +26,8 @@ defmodule Core.User.Services.UpdateUserServiceTest do
     end
 
     test "returns error when user is not found" do
-      assert {:error, :not_found} = UpdateUserService.execute(Uniq.UUID.uuid7(), %{full_name: "Ghost"})
+      assert {:error, :not_found} =
+               UpdateUserService.execute(Uniq.UUID.uuid7(), %{full_name: "Ghost"})
     end
 
     test "returns error when email is already taken", %{user: user} do

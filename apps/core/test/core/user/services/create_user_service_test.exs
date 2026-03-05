@@ -6,11 +6,12 @@ defmodule Core.User.Services.CreateUserServiceTest do
   alias Core.User.Services.CreateUserService
 
   setup do
-    command = CreateUserCommand.build!(%{
-      full_name: "John Doe",
-      email: "john@example.com",
-      password: "password123"
-    })
+    command =
+      CreateUserCommand.build!(%{
+        full_name: "John Doe",
+        email: "john@example.com",
+        password: "password123"
+      })
 
     %{command: command}
   end
