@@ -58,7 +58,8 @@ defmodule FinhubWeb.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:core, in_umbrella: true},
       {:jason, "~> 1.2"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:tidewave, "~> 0.5", only: :dev}
     ]
   end
 
