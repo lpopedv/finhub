@@ -1,0 +1,23 @@
+<div class="hero min-h-screen">
+  <div class="hero-content">
+    <div class="card w-full max-w-sm shadow-2xl bg-base-100">
+      <div class="card-body">
+        <h2 class="card-title text-2xl">Finhub</h2>
+
+        <.form :let={f} for={%{}} action={~p"/sign-in"}>
+          <.input field={f[:email]} type="email" label="Email" autocomplete="email" required />
+          <.input
+            field={f[:password]}
+            type="password"
+            label="Password"
+            autocomplete="current-password"
+            required
+          />
+          <div class="w-full mt-2">
+            <.button type="submit" variant="primary">Sign in</.button>
+          </div>
+        </.form>
+      </div>
+    </div>
+  </div>
+</div>

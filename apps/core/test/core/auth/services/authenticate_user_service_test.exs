@@ -34,7 +34,8 @@ defmodule Core.Auth.Services.AuthenticateUserServiceTest do
     end
 
     test "returns error when user does not exist" do
-      command = AuthenticateUserCommand.build!(%{email: "ghost@example.com", password: "password123"})
+      command =
+        AuthenticateUserCommand.build!(%{email: "ghost@example.com", password: "password123"})
 
       assert {:error, :invalid_credentials} = AuthenticateUserService.execute(command)
     end

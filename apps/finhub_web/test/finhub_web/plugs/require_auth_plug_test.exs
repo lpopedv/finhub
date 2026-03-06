@@ -5,7 +5,10 @@ defmodule FinhubWeb.Plugs.RequireAuthPlugTest do
 
   describe "call/2" do
     test "halts and redirects to sign-in when session has no user_id", %{conn: conn} do
-      conn = conn |> Plug.Test.init_test_session(%{}) |> RequireAuthPlug.call([])
+      conn =
+        conn
+        |> Plug.Test.init_test_session(%{})
+        |> RequireAuthPlug.call([])
 
       assert conn.halted
       assert redirected_to(conn) == "/sign-in"
