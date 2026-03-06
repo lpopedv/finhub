@@ -4,6 +4,8 @@
       <div class="card-body">
         <h2 class="card-title text-2xl">Finhub</h2>
 
+        <.flash kind={:error} flash={@flash} />
+
         <.form :let={f} for={%{}} action={~p"/sign-in"}>
           <.input field={f[:email]} type="email" label="Email" autocomplete="email" required />
           <.input

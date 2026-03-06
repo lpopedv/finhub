@@ -25,6 +25,8 @@ defmodule FinhubWeb.Layouts do
       </Layouts.app>
 
   """
+  attr :flash, :map, required: true, doc: "the map of flash messages from the socket"
+
   attr :current_scope, :map,
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
@@ -33,6 +35,7 @@ defmodule FinhubWeb.Layouts do
 
   def app(assigns) do
     ~H"""
+    <.flash_group flash={@flash} />
     <div class="drawer lg:drawer-open min-h-screen">
       <input id="nav-drawer" type="checkbox" class="drawer-toggle" />
 

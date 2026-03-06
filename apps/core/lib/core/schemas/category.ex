@@ -37,6 +37,6 @@ defmodule Core.Schemas.Category do
       |> cast(params, @required_params ++ @optional_params)
       |> validate_required(@required_params)
       |> validate_length(:name, max: 100)
-      |> unique_constraint([:user_id, :name])
+      |> unique_constraint(:name, name: :categories_user_id_name_index)
       |> assoc_constraint(:user)
 end

@@ -10,7 +10,7 @@ defmodule FinhubWeb.DashboardLive do
   @spec render(map()) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
-    <Layouts.app>
+    <Layouts.app flash={@flash}>
       <.header>Dashboard</.header>
     </Layouts.app>
     """

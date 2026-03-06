@@ -61,7 +61,7 @@ defmodule Core.Schemas.CategoryTest do
                |> Category.changeset(params)
                |> Repo.insert()
 
-      assert "has already been taken" in errors_on(changeset)[:user_id]
+      assert "has already been taken" in errors_on(changeset)[:name]
     end
 
     test "allows same name for different users", %{required_params: params} do

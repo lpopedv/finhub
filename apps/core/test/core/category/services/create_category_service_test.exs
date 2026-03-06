@@ -36,7 +36,7 @@ defmodule Core.Category.Services.CreateCategoryServiceTest do
       CreateCategoryService.execute(command)
 
       assert {:error, changeset} = CreateCategoryService.execute(command)
-      assert "has already been taken" in errors_on(changeset).user_id
+      assert "has already been taken" in errors_on(changeset).name
     end
   end
 end
