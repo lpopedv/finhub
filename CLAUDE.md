@@ -92,13 +92,14 @@ See `AGENTS.md` for detailed Phoenix 1.8, LiveView, HEEx, and Ecto guidelines. K
 | Data table | `<.table id="..." rows={...}>` |
 | Data list (key/value) | `<.list>` |
 | Heroicon | `<.icon name="hero-...">` — never use `Heroicons` module |
-| Flash toast | `<Layouts.flash_group flash={@flash} />` (renders both :info and :error) |
+| Flash toast | `put_flash(socket, :info, "msg")` no `handle_event` — aparece automaticamente via `Layouts.app` |
 
 ### Layouts
 
-- `<.flash_group flash={@flash} />` está no `root.html.heex` — flash funciona automaticamente em toda página, nunca adicionar nos templates
+- **Flash em LiveView**: o root layout NÃO é re-difado em `handle_event`. O `flash_group` está dentro de `Layouts.app`, que é re-renderizado a cada evento. Sempre passar `flash={@flash}` para `<Layouts.app flash={@flash}>`.
+- **Flash em controllers**: usar `<.flash kind={:error} flash={@flash} />` diretamente no template (ex: sign-in).
 - **Controller templates**: só o conteúdo — o root layout é aplicado automaticamente pelo pipeline
-- **LiveView templates**: iniciam com `<Layouts.app>` (inclui nav)
+- **LiveView templates**: iniciam com `<Layouts.app flash={@flash}>` (inclui nav e flash)
 - Para páginas sem nav (ex: sign-in): usar controller + template, sem `<Layouts.app>`
 
 ### Other
