@@ -1,17 +1,19 @@
-defmodule FinhubWeb.PageControllerTest do
+defmodule FinhubWeb.DashboardLiveTest do
   use FinhubWeb.ConnCase, async: true
 
+  import Core.Factory
+  import Phoenix.LiveViewTest
+
   test "GET / redirects to sign-in when not authenticated", %{conn: conn} do
-    conn = get(conn, ~p"/")
-    assert redirected_to(conn) == ~p"/sign-in"
+    assert {:error, {:redirect, %{to: "/sign-in"}}} = live(conn, ~p"/")
   end
 
-  test "GET / renders when authenticated", %{conn: conn} do
-    conn =
-      conn
-      |> Plug.Test.init_test_session(%{"user_id" => "some-user-id"})
-      |> get(~p"/")
+  test "GET / renders dashboard when authenticated", %{conn: conn} do
+    user = insert(:user)
+    conn = init_test_session(conn, %{"user_id" => user.id})
 
-    assert html_response(conn, 200) =~ "Peace of mind from prototype to production"
+    {:ok, _view, html} = live(conn, ~p"/")
+
+    assert html =~ "Dashboard"
   end
 end

@@ -29,7 +29,10 @@ defmodule FinhubWeb.Router do
   scope "/", FinhubWeb do
     pipe_through [:browser, :require_authenticated]
 
-    get "/", PageController, :home
+    live_session :authenticated,
+      on_mount: [{FinhubWeb.Live.Hooks.UserAuth, :default}] do
+      live "/", DashboardLive
+    end
   end
 
   # Other scopes may use custom stacks.

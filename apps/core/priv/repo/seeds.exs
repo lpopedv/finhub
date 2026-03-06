@@ -1,3 +1,5 @@
+if Mix.env() == :test, do: System.halt(0)
+
 alias Core.User.Services.CreateUserService
 alias Core.User.Commands.CreateUserCommand
 

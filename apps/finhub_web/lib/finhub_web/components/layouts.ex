@@ -33,38 +33,52 @@ defmodule FinhubWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
-      <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
-          <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
-        </a>
-      </div>
-      <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
-          </li>
-          <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
-            <.theme_toggle />
-          </li>
-          <li>
-            <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </header>
+    <div class="drawer lg:drawer-open min-h-screen">
+      <input id="nav-drawer" type="checkbox" class="drawer-toggle" />
 
-    <main class="px-4 py-20 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl space-y-4">
-        {render_slot(@inner_block)}
+      <div class="drawer-content flex flex-col min-h-screen">
+        <header class="navbar bg-base-100 border-b border-base-300 sticky top-0 z-20 lg:hidden">
+          <div class="flex-none">
+            <label for="nav-drawer" aria-label="open sidebar" class="btn btn-ghost btn-square">
+              <.icon name="hero-bars-3" class="size-5" />
+            </label>
+          </div>
+          <div class="flex-1 px-2">
+            <span class="text-base font-semibold">Finhub</span>
+          </div>
+        </header>
+
+        <main class="flex-1 p-6 lg:p-8">
+          {render_slot(@inner_block)}
+        </main>
       </div>
-    </main>
+
+      <div class="drawer-side z-40">
+        <label for="nav-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <aside class="bg-base-200 min-h-full w-64 flex flex-col">
+          <div class="px-4 py-3 border-b border-base-300">
+            <a href={~p"/"} class="text-xl font-bold">Finhub</a>
+          </div>
+          <ul class="menu menu-md w-full py-4 flex-1 gap-1">
+            <li>
+              <a href={~p"/"}>
+                <.icon name="hero-squares-2x2" class="size-4" /> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="/categorias">
+                <.icon name="hero-tag" class="size-4" /> Categorias
+              </a>
+            </li>
+            <li>
+              <a href="/transacoes">
+                <.icon name="hero-arrows-right-left" class="size-4" /> Transações
+              </a>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
     """
   end
 

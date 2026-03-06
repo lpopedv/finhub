@@ -19,6 +19,7 @@ defmodule FinhubWeb.SessionController do
          {:ok, user} <- AuthenticateUserService.execute(command) do
       conn
       |> put_session("user_id", user.id)
+      |> put_session("live_socket_id", "users_socket:#{user.id}")
       |> configure_session(renew: true)
       |> redirect(to: ~p"/")
     else
@@ -31,6 +32,9 @@ defmodule FinhubWeb.SessionController do
 
   @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def delete(conn, _params) do
+    user_id = get_session(conn, "user_id")
+    FinhubWeb.Endpoint.broadcast("users_socket:#{user_id}", "disconnect", %{})
+
     conn
     |> configure_session(drop: true)
     |> redirect(to: ~p"/sign-in")
