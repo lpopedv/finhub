@@ -14,8 +14,20 @@ defmodule FinhubWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :require_authenticated do
+    plug FinhubWeb.Plugs.RequireAuthPlug
+  end
+
   scope "/", FinhubWeb do
     pipe_through :browser
+
+    get "/sign-in", SessionController, :sign_in_form
+    post "/sign-in", SessionController, :create
+    delete "/sign-out", SessionController, :delete
+  end
+
+  scope "/", FinhubWeb do
+    pipe_through [:browser, :require_authenticated]
 
     get "/", PageController, :home
   end

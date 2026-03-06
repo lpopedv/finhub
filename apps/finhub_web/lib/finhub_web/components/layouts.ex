@@ -20,13 +20,11 @@ defmodule FinhubWeb.Layouts do
 
   ## Examples
 
-      <Layouts.app flash={@flash}>
+      <Layouts.app>
         <h1>Content</h1>
       </Layouts.app>
 
   """
-  attr :flash, :map, required: true, doc: "the map of flash messages"
-
   attr :current_scope, :map,
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
@@ -67,8 +65,6 @@ defmodule FinhubWeb.Layouts do
         {render_slot(@inner_block)}
       </div>
     </main>
-
-    <.flash_group flash={@flash} />
     """
   end
 
