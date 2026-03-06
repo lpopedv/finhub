@@ -1,0 +1,108 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Finhub is a personal finance web application built as an Elixir umbrella project with two apps:
+
+- **`apps/core`** — Business logic, Ecto schemas, and database access (PostgreSQL)
+- **`apps/finhub_web`** — Phoenix 1.8 web layer (LiveView, controllers, templates)
+
+## Commands
+
+```bash
+# First-time setup (runs in all child apps)
+mix setup
+
+# Start the dev server
+mix phx.server
+
+# Run all tests
+mix test
+
+# Run a single test file
+mix test apps/core/test/my_test.exs
+
+# Run previously failed tests
+mix test --failed
+
+# Pre-commit check (compile + format + test, runs in :test env)
+mix precommit
+
+# Generate a migration (always use this, not manual file creation)
+mix ecto.gen.migration migration_name_using_underscores
+
+# Reset the database
+mix ecto.reset
+```
+
+**Always run `mix precommit` when done with changes** and fix any issues before considering work complete.
+
+## Architecture
+
+### Command/Service Pattern
+
+Business logic in `apps/core` follows a command/service pattern, organized by domain:
+
+```
+apps/core/lib/core/
+  schemas/          # Ecto schemas (User, Category, Transaction)
+  <domain>/
+    commands/       # Input structs (e.g., CreateTransactionCommand)
+    services/       # Business logic modules with a single execute/1 function
+```
+
+Each service module has one `execute/1` function that takes a command struct and returns `{:ok, result}` or `{:error, changeset}`.
+
+### Schemas
+
+All schemas use `Core.Schema` (not `Ecto.Schema` directly), which sets:
+- UUID v7 primary keys via `Uniq.UUID`
+- `utc_datetime_usec` timestamps
+- UUID foreign key type
+
+Money values are stored as **integers in cents** to avoid floating-point issues.
+
+### Web Layer
+
+`apps/finhub_web` calls `Core` services directly. The web layer should not contain business logic — delegate to services in `apps/core`.
+
+## Key Conventions
+
+- **HTTP client**: Use `Req` — never `:httpoison`, `:tesla`, or `:httpc`
+- **Programmatic fields** (e.g., `user_id`): Must **not** be in `cast/2` calls; set explicitly when building the struct
+- **Specs**: Required on all public functions in `apps/core` (Credo enforces this)
+- **Module layout**: Strict ordering enforced by Credo — aliases before `@moduledoc`, etc.
+- Max line length: 120 characters
+
+## Phoenix/LiveView Notes
+
+See `AGENTS.md` for detailed Phoenix 1.8, LiveView, HEEx, and Ecto guidelines. Key points:
+
+### UI Components — always use CoreComponents
+
+**Never write raw HTML when a component exists.** All components are imported automatically via `use FinhubWeb, :html` and `use FinhubWeb, :live_view`.
+
+| Need | Use |
+|---|---|
+| Text/email/password/select/textarea input | `<.input field={f[:field]} type="..." label="..." />` |
+| Button or link-as-button | `<.button variant="primary">Label</.button>` |
+| Page/section title | `<.header>Title</.header>` |
+| Data table | `<.table id="..." rows={...}>` |
+| Data list (key/value) | `<.list>` |
+| Heroicon | `<.icon name="hero-...">` — never use `Heroicons` module |
+| Flash toast | `<Layouts.flash_group flash={@flash} />` (renders both :info and :error) |
+
+### Layouts
+
+- `<.flash_group flash={@flash} />` está no `root.html.heex` — flash funciona automaticamente em toda página, nunca adicionar nos templates
+- **Controller templates**: só o conteúdo — o root layout é aplicado automaticamente pelo pipeline
+- **LiveView templates**: iniciam com `<Layouts.app>` (inclui nav)
+- Para páginas sem nav (ex: sign-in): usar controller + template, sem `<Layouts.app>`
+
+### Other
+
+- Use LiveView streams for all collections
+- Tailwind CSS v4 — no `tailwind.config.js`, use `@import "tailwindcss"` syntax in `app.css`
+- Never use `@apply` in CSS; never write inline `<script>` tags in templates
