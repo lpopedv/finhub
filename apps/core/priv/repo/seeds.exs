@@ -1,11 +1,14 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     Core.Repo.insert!(%Core.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+alias Core.User.Services.CreateUserService
+alias Core.User.Commands.CreateUserCommand
+
+full_name = "John Doe"
+email = "user@email.com"
+password = "pass123456"
+
+%{
+  full_name: full_name,
+  email: email,
+  password: password
+}
+|> CreateUserCommand.build!()
+|> CreateUserService.execute()
