@@ -16,6 +16,7 @@ defmodule FinhubWeb.TransactionLive.FormComponent do
         </h3>
         <.form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
           <.input field={@form[:name]} label="Nome" />
+          <.input field={@form[:date]} type="date" label="Data" />
           <.input field={@form[:value_in_cents]} type="number" label="Valor (centavos)" />
           <.input
             field={@form[:category_id]}
@@ -95,7 +96,8 @@ defmodule FinhubWeb.TransactionLive.FormComponent do
       name: params["name"],
       value_in_cents: params["value_in_cents"],
       category_id: params["category_id"],
-      is_fixed: params["is_fixed"]
+      is_fixed: params["is_fixed"],
+      date: params["date"]
     }
 
     CreateTransactionService.execute(command)
