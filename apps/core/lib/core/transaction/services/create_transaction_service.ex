@@ -19,7 +19,8 @@ defmodule Core.Transaction.Services.CreateTransactionService do
         category_id: command.category_id,
         name: command.name,
         value_in_cents: command.value_in_cents,
-        is_fixed: command.is_fixed
+        is_fixed: command.is_fixed,
+        date: command.date
       }
       |> Transaction.changeset()
       |> Repo.insert()

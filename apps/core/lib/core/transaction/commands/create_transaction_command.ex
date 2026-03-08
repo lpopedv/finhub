@@ -7,13 +7,14 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
   - `user_id` - UUID of the owning user (required)
   - `name` - Transaction name (required, max 255 characters)
   - `value_in_cents` - Transaction value in cents, must be greater than 0 (required)
+  - `date` - Date the transaction occurs or is due (required)
   - `category_id` - UUID of the associated category (optional)
   - `is_fixed` - Whether the transaction is a fixed expense (optional, defaults to false)
   """
 
   use Core.EmbeddedSchema
 
-  @required_params [:user_id, :name, :value_in_cents]
+  @required_params [:user_id, :name, :value_in_cents, :date]
   @optional_params [:category_id, :is_fixed]
 
   @type t :: %__MODULE__{
@@ -21,7 +22,8 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
           category_id: String.t() | nil,
           name: String.t(),
           value_in_cents: integer(),
-          is_fixed: boolean()
+          is_fixed: boolean(),
+          date: Date.t()
         }
 
   embedded_schema do
@@ -30,6 +32,7 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
     field(:name, :string)
     field(:value_in_cents, :integer)
     field(:is_fixed, :boolean, default: false)
+    field(:date, :date)
   end
 
   @spec changeset(map()) :: Ecto.Changeset.t()

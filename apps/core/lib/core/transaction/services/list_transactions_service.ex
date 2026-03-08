@@ -2,7 +2,7 @@ defmodule Core.Transaction.Services.ListTransactionsService do
   @moduledoc """
   Service for listing transactions of a user.
 
-  Returns transactions ordered by insertion date, most recent first.
+  Returns transactions ordered by transaction date, most recent first.
   """
 
   import Ecto.Query
@@ -15,7 +15,7 @@ defmodule Core.Transaction.Services.ListTransactionsService do
     queryable =
       from(t in Transaction,
         where: t.user_id == ^user_id,
-        order_by: [desc: t.inserted_at]
+        order_by: [desc: t.date, desc: t.inserted_at]
       )
 
     Repo.all(queryable)

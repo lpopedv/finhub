@@ -27,7 +27,8 @@ defmodule Core.Factory do
       category: nil,
       name: sequence(:name, &"Transaction #{&1}"),
       value_in_cents: 1000,
-      is_fixed: false
+      is_fixed: false,
+      date: Date.utc_today()
     }
   end
 end
