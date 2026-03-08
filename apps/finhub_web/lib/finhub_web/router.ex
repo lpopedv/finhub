@@ -33,6 +33,7 @@ defmodule FinhubWeb.Router do
       on_mount: [{FinhubWeb.Live.Hooks.UserAuth, :default}] do
       live "/", DashboardLive
       live "/categories", CategoryLive.Index
+      live "/transactions", TransactionLive.Index
     end
   end
 
