@@ -55,6 +55,8 @@ apps/core/lib/core/
 
 Each service module has one `execute/1` function that takes a command struct and returns `{:ok, result}` or `{:error, changeset}`.
 
+**Commands** use `Core.EmbeddedSchema` (not `Core.Schema`), which adds `build/1` and `build!/1` helpers. Commands have no primary key.
+
 ### Schemas
 
 All schemas use `Core.Schema` (not `Ecto.Schema` directly), which sets:
@@ -64,6 +66,26 @@ All schemas use `Core.Schema` (not `Ecto.Schema` directly), which sets:
 
 Money values are stored as **integers in cents** to avoid floating-point issues.
 
+### Authentication
+
+- **`RequireAuthPlug`** — Plug that checks `user_id` in session; redirects to `/sign-in` if missing
+- **`FinhubWeb.Live.Hooks.UserAuth`** — `on_mount` hook used on all authenticated LiveView routes; assigns `:current_user`
+- Session deletion broadcasts to `users_socket:#{user_id}` via PubSub to force LiveView disconnect on logout
+- Password hashing uses `Argon2` (`argon2_elixir`); test env uses reduced cost (`t_cost: 1, m_cost: 8`)
+
+### Routes
+
+```
+GET  /sign-in   → SessionController.sign_in_form
+POST /sign-in   → SessionController.create
+DEL  /sign-out  → SessionController.delete
+
+# Authenticated (RequireAuthPlug + UserAuth on_mount):
+GET /              → DashboardLive
+GET /categories    → CategoryLive.Index
+GET /transactions  → TransactionLive.Index
+```
+
 ### Web Layer
 
 `apps/finhub_web` calls `Core` services directly. The web layer should not contain business logic — delegate to services in `apps/core`.
@@ -71,10 +93,12 @@ Money values are stored as **integers in cents** to avoid floating-point issues.
 ## Key Conventions
 
 - **HTTP client**: Use `Req` — never `:httpoison`, `:tesla`, or `:httpc`
+- **HTTP adapter**: Bandit (not Cowboy)
 - **Programmatic fields** (e.g., `user_id`): Must **not** be in `cast/2` calls; set explicitly when building the struct
 - **Specs**: Required on all public functions in `apps/core` (Credo enforces this)
 - **Module layout**: Strict ordering enforced by Credo — aliases before `@moduledoc`, etc.
 - Max line length: 120 characters
+- **Test factories**: Use `ExMachina` (`apps/core/test/support/factory.ex`) — excluded from Credo
 
 ## Phoenix/LiveView Notes
 
