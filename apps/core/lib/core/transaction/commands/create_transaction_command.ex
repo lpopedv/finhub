@@ -9,29 +9,29 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
   - `value_in_cents` - Transaction value in cents, must be greater than 0 (required)
   - `date` - Date the transaction occurs or is due (required)
   - `category_id` - UUID of the associated category (optional)
-  - `is_fixed` - Whether the transaction is a fixed expense (optional, defaults to false)
+  - `fixed_transaction_id` - UUID of the originating fixed transaction rule (optional)
   """
 
   use Core.EmbeddedSchema
 
   @required_params [:user_id, :name, :value_in_cents, :date]
-  @optional_params [:category_id, :is_fixed]
+  @optional_params [:category_id, :fixed_transaction_id]
 
   @type t :: %__MODULE__{
           user_id: String.t(),
           category_id: String.t() | nil,
+          fixed_transaction_id: String.t() | nil,
           name: String.t(),
           value_in_cents: integer(),
-          is_fixed: boolean(),
           date: Date.t()
         }
 
   embedded_schema do
     field(:user_id, :string)
     field(:category_id, :string)
+    field(:fixed_transaction_id, :string)
     field(:name, :string)
     field(:value_in_cents, :integer)
-    field(:is_fixed, :boolean, default: false)
     field(:date, :date)
   end
 
