@@ -59,10 +59,13 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
     end
 
     test "opens modal on Nova Categoria click", %{conn: conn} do
-      {:ok, view, html} = live(conn, ~p"/categories")
-      refute html =~ "modal-open"
+      {:ok, view, initial_html} = live(conn, ~p"/categories")
+      refute initial_html =~ "modal-open"
 
-      html = view |> element("button", "Nova Categoria") |> render_click()
+      html =
+        view
+        |> element("button", "Nova Categoria")
+        |> render_click()
 
       assert html =~ "modal-open"
       assert html =~ "Nova Categoria"
@@ -70,16 +73,25 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
 
     test "closes modal on Cancelar click", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/categories")
-      view |> element("button", "Nova Categoria") |> render_click()
 
-      html = view |> element("button", "Cancelar") |> render_click()
+      view
+      |> element("button", "Nova Categoria")
+      |> render_click()
+
+      html =
+        view
+        |> element("button", "Cancelar")
+        |> render_click()
 
       refute html =~ "modal-open"
     end
 
     test "shows validation error when name is blank", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/categories")
-      view |> element("button", "Nova Categoria") |> render_click()
+
+      view
+      |> element("button", "Nova Categoria")
+      |> render_click()
 
       html =
         view
@@ -91,7 +103,10 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
 
     test "creates category successfully, shows flash and closes modal", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/categories")
-      view |> element("button", "Nova Categoria") |> render_click()
+
+      view
+      |> element("button", "Nova Categoria")
+      |> render_click()
 
       view
       |> form("form", %{"category" => %{"name" => "Lazer", "description" => "Diversão"}})
@@ -109,7 +124,10 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
       insert(:category, user: user, name: "Existente")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
-      view |> element("button", "Nova Categoria") |> render_click()
+
+      view
+      |> element("button", "Nova Categoria")
+      |> render_click()
 
       html =
         view
@@ -122,7 +140,10 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
 
     test "validates in real time while typing", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/categories")
-      view |> element("button", "Nova Categoria") |> render_click()
+
+      view
+      |> element("button", "Nova Categoria")
+      |> render_click()
 
       html =
         view
@@ -145,7 +166,10 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
-      html = view |> element("button", "Editar") |> render_click()
+      html =
+        view
+        |> element("button", "Editar")
+        |> render_click()
 
       assert html =~ "modal-open"
       assert html =~ "Editar Categoria"
@@ -156,7 +180,10 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
       insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
-      view |> element("button", "Editar") |> render_click()
+
+      view
+      |> element("button", "Editar")
+      |> render_click()
 
       view
       |> form("form", %{
@@ -176,7 +203,10 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
       insert(:category, user: user, name: "Alimentação")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
-      view |> element("button", "Editar") |> render_click()
+
+      view
+      |> element("button", "Editar")
+      |> render_click()
 
       html =
         view
@@ -236,7 +266,10 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
-      html = view |> element("button", "Excluir") |> render_click()
+      html =
+        view
+        |> element("button", "Excluir")
+        |> render_click()
 
       refute html =~ "Alimentação"
       assert html =~ "Categoria excluída com sucesso!"
