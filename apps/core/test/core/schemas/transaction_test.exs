@@ -10,7 +10,8 @@ defmodule Core.Schemas.TransactionTest do
       required_params = %{
         user_id: user.id,
         name: "Groceries",
-        value_in_cents: 5000
+        value_in_cents: 5000,
+        date: ~D[2026-03-08]
       }
 
       %{required_params: required_params, user: user}

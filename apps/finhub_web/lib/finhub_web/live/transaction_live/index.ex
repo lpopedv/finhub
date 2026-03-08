@@ -116,6 +116,9 @@ defmodule FinhubWeb.TransactionLive.Index do
 
       <.table id="transactions" rows={@streams.transactions}>
         <:col :let={{_id, transaction}} label="Nome">{transaction.name}</:col>
+        <:col :let={{_id, transaction}} label="Data">
+          {Calendar.strftime(transaction.date, "%d/%m/%Y")}
+        </:col>
         <:col :let={{_id, transaction}} label="Valor (centavos)">{transaction.value_in_cents}</:col>
         <:col :let={{_id, transaction}} label="Fixo">
           {if transaction.is_fixed, do: "Sim", else: "Não"}

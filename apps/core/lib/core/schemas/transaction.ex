@@ -12,7 +12,7 @@ defmodule Core.Schemas.Transaction do
   alias Core.Schemas.Category
   alias Core.Schemas.User
 
-  @required_params [:user_id, :name, :value_in_cents]
+  @required_params [:user_id, :name, :value_in_cents, :date]
   @optional_params [:category_id, :is_fixed]
 
   @type t :: %__MODULE__{
@@ -22,6 +22,7 @@ defmodule Core.Schemas.Transaction do
           name: String.t(),
           value_in_cents: integer(),
           is_fixed: boolean(),
+          date: Date.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t() | nil
         }
@@ -30,6 +31,7 @@ defmodule Core.Schemas.Transaction do
     field :name, :string
     field :value_in_cents, :integer
     field :is_fixed, :boolean, default: false
+    field :date, :date
 
     belongs_to :user, User
     belongs_to :category, Category

@@ -119,7 +119,13 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       |> render_click()
 
       view
-      |> form("form", %{"transaction" => %{"name" => "Aluguel", "value_in_cents" => "150000"}})
+      |> form("form", %{
+        "transaction" => %{
+          "name" => "Aluguel",
+          "value_in_cents" => "150000",
+          "date" => "2026-03-08"
+        }
+      })
       |> render_submit()
 
       html = render(view)
@@ -159,7 +165,8 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
         "transaction" => %{
           "name" => "Aluguel",
           "value_in_cents" => "150000",
-          "category_id" => category.id
+          "category_id" => category.id,
+          "date" => "2026-03-08"
         }
       })
       |> render_submit()
@@ -176,7 +183,12 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       view
       |> form("form", %{
-        "transaction" => %{"name" => "Salário", "value_in_cents" => "500000", "category_id" => ""}
+        "transaction" => %{
+          "name" => "Salário",
+          "value_in_cents" => "500000",
+          "category_id" => "",
+          "date" => "2026-03-08"
+        }
       })
       |> render_submit()
 
@@ -195,7 +207,8 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
         "transaction" => %{
           "name" => "Salário",
           "value_in_cents" => "500000",
-          "is_fixed" => "true"
+          "is_fixed" => "true",
+          "date" => "2026-03-08"
         }
       })
       |> render_submit()
