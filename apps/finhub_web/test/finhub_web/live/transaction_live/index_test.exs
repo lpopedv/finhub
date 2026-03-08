@@ -126,6 +126,49 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       assert html =~ "can&#39;t be blank"
     end
+
+    test "creates transaction with category", %{conn: conn, user: user} do
+      category = insert(:category, user: user, name: "Moradia")
+
+      {:ok, view, _html} = live(conn, ~p"/transactions")
+      view |> element("button", "Nova Transação") |> render_click()
+
+      view
+      |> form("form", %{
+        "transaction" => %{"name" => "Aluguel", "value_in_cents" => "150000", "category_id" => category.id}
+      })
+      |> render_submit()
+
+      assert render(view) =~ "Transação criada com sucesso!"
+    end
+
+    test "creates transaction without category (prompt vazio)", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/transactions")
+      view |> element("button", "Nova Transação") |> render_click()
+
+      view
+      |> form("form", %{
+        "transaction" => %{"name" => "Salário", "value_in_cents" => "500000", "category_id" => ""}
+      })
+      |> render_submit()
+
+      assert render(view) =~ "Transação criada com sucesso!"
+    end
+
+    test "creates transaction with is_fixed marcado", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/transactions")
+      view |> element("button", "Nova Transação") |> render_click()
+
+      view
+      |> form("form", %{
+        "transaction" => %{"name" => "Salário", "value_in_cents" => "500000", "is_fixed" => "true"}
+      })
+      |> render_submit()
+
+      html = render(view)
+      assert html =~ "Transação criada com sucesso!"
+      assert html =~ "Sim"
+    end
   end
 
   describe "edit modal" do
