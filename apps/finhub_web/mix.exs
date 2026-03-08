@@ -59,6 +59,7 @@ defmodule FinhubWeb.MixProject do
       {:core, in_umbrella: true},
       {:jason, "~> 1.2"},
       {:bandit, "~> 1.5"},
+      {:oban_web, "~> 2.11"},
       {:tidewave, "~> 0.5", only: :dev}
     ]
   end

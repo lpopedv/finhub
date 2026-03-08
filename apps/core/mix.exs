@@ -45,6 +45,7 @@ defmodule Core.MixProject do
       {:req, "~> 0.5"},
       {:uniq, "~> 0.1"},
       {:argon2_elixir, "~> 4.1"},
+      {:oban, "~> 2.19"},
       {:ex_machina, "~> 2.8", only: :test}
     ]
   end

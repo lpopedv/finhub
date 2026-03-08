@@ -63,6 +63,11 @@ config :logger, :default_formatter,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Configure Oban
+config :core, Oban,
+  repo: Core.Repo,
+  queues: [default: 10]
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 

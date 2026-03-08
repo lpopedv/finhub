@@ -10,9 +10,8 @@ defmodule Core.Application do
     children = [
       Core.Repo,
       {DNSCluster, query: Application.get_env(:core, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: Core.PubSub}
-      # Start a worker by calling: Core.Worker.start_link(arg)
-      # {Core.Worker, arg}
+      {Phoenix.PubSub, name: Core.PubSub},
+      {Oban, Application.fetch_env!(:core, Oban)}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Core.Supervisor)
