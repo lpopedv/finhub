@@ -60,23 +60,23 @@ defmodule FinhubWeb.Layouts do
         <label for="nav-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
         <aside class="bg-base-200 min-h-full w-64 flex flex-col">
           <div class="px-4 py-3 border-b border-base-300">
-            <a href={~p"/"} class="text-xl font-bold">Finhub</a>
+            <.link navigate={~p"/"} class="text-xl font-bold">Finhub</.link>
           </div>
           <ul class="menu menu-md w-full py-4 flex-1 gap-1">
             <li>
-              <a href={~p"/"}>
+              <.link navigate={~p"/"}>
                 <.icon name="hero-squares-2x2" class="size-4" /> Dashboard
-              </a>
+              </.link>
             </li>
             <li>
-              <a href="/categorias">
+              <.link navigate={~p"/categories"}>
                 <.icon name="hero-tag" class="size-4" /> Categorias
-              </a>
+              </.link>
             </li>
             <li>
-              <a href="/transacoes">
+              <.link navigate={~p"/transactions"}>
                 <.icon name="hero-arrows-right-left" class="size-4" /> Transações
-              </a>
+              </.link>
             </li>
           </ul>
         </aside>
