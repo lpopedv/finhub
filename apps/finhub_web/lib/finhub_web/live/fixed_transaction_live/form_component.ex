@@ -1,22 +1,22 @@
-defmodule FinhubWeb.TransactionLive.FormComponent do
+defmodule FinhubWeb.FixedTransactionLive.FormComponent do
   use FinhubWeb, :live_component
 
-  alias Core.Schemas.Transaction
-  alias Core.Transaction.Commands.CreateTransactionCommand
-  alias Core.Transaction.Services.CreateTransactionService
-  alias Core.Transaction.Services.UpdateTransactionService
+  alias Core.FixedTransaction.Commands.CreateFixedTransactionCommand
+  alias Core.FixedTransaction.Services.CreateFixedTransactionService
+  alias Core.FixedTransaction.Services.UpdateFixedTransactionService
+  alias Core.Schemas.FixedTransaction
 
   @spec render(map()) :: Phoenix.LiveView.Rendered.t()
   def render(assigns) do
     ~H"""
-    <dialog id="transaction-form-modal" class="modal modal-open">
+    <dialog id="fixed-transaction-form-modal" class="modal modal-open">
       <div class="modal-box">
         <h3 class="text-lg font-semibold mb-4">
-          {if @action == :new, do: "Nova Transação", else: "Editar Transação"}
+          {if @action == :new, do: "Nova Transação Fixa", else: "Editar Transação Fixa"}
         </h3>
         <.form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
           <.input field={@form[:name]} label="Nome" />
-          <.input field={@form[:date]} type="date" label="Data" />
+          <.input field={@form[:day_of_month]} type="number" label="Dia do Mês" />
           <.input field={@form[:value_in_cents]} type="number" label="Valor (centavos)" />
           <.input
             field={@form[:category_id]}
@@ -48,24 +48,24 @@ defmodule FinhubWeb.TransactionLive.FormComponent do
 
   @spec handle_event(String.t(), map(), Phoenix.LiveView.Socket.t()) ::
           {:noreply, Phoenix.LiveView.Socket.t()}
-  def handle_event("validate", %{"transaction" => params}, socket) do
+  def handle_event("validate", %{"fixed_transaction" => params}, socket) do
     form =
       socket
       |> build_changeset(normalize_params(params))
       |> Map.put(:action, :validate)
-      |> to_form(as: "transaction")
+      |> to_form(as: "fixed_transaction")
 
     {:noreply, assign(socket, :form, form)}
   end
 
-  def handle_event("save", %{"transaction" => params}, socket) do
-    case save_transaction(socket, normalize_params(params)) do
-      {:ok, transaction} ->
-        notify_parent({:saved, transaction})
+  def handle_event("save", %{"fixed_transaction" => params}, socket) do
+    case save_fixed_transaction(socket, normalize_params(params)) do
+      {:ok, fixed_transaction} ->
+        notify_parent({:saved, fixed_transaction})
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :form, to_form(changeset, as: "transaction"))}
+        {:noreply, assign(socket, :form, to_form(changeset, as: "fixed_transaction"))}
 
       {:error, :not_found} ->
         notify_parent({:error, :not_found})
@@ -80,29 +80,35 @@ defmodule FinhubWeb.TransactionLive.FormComponent do
         :form,
         socket
         |> build_changeset(%{})
-        |> to_form(as: "transaction")
+        |> to_form(as: "fixed_transaction")
       )
 
   defp build_changeset(%{assigns: %{action: :new}}, params),
-    do: CreateTransactionCommand.changeset(params)
+    do: CreateFixedTransactionCommand.changeset(params)
 
-  defp build_changeset(%{assigns: %{action: :edit, transaction: transaction}}, params),
-    do: Transaction.changeset(transaction, params)
+  defp build_changeset(
+         %{assigns: %{action: :edit, fixed_transaction: fixed_transaction}},
+         params
+       ),
+       do: FixedTransaction.changeset(fixed_transaction, params)
 
-  defp save_transaction(%{assigns: %{action: :new, current_user: user}}, params) do
-    command = %CreateTransactionCommand{
+  defp save_fixed_transaction(%{assigns: %{action: :new, current_user: user}}, params) do
+    command = %CreateFixedTransactionCommand{
       user_id: user.id,
       name: params["name"],
       value_in_cents: params["value_in_cents"],
       category_id: params["category_id"],
-      date: params["date"]
+      day_of_month: params["day_of_month"]
     }
 
-    CreateTransactionService.execute(command)
+    CreateFixedTransactionService.execute(command)
   end
 
-  defp save_transaction(%{assigns: %{action: :edit, transaction: transaction}}, params),
-    do: UpdateTransactionService.execute(transaction.id, params)
+  defp save_fixed_transaction(
+         %{assigns: %{action: :edit, fixed_transaction: fixed_transaction}},
+         params
+       ),
+       do: UpdateFixedTransactionService.execute(fixed_transaction.id, params)
 
   defp normalize_params(params) do
     Map.update(params, "category_id", nil, fn

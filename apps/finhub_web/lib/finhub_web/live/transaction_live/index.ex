@@ -120,9 +120,6 @@ defmodule FinhubWeb.TransactionLive.Index do
           {Calendar.strftime(transaction.date, "%d/%m/%Y")}
         </:col>
         <:col :let={{_id, transaction}} label="Valor (centavos)">{transaction.value_in_cents}</:col>
-        <:col :let={{_id, transaction}} label="Fixo">
-          {if transaction.is_fixed, do: "Sim", else: "Não"}
-        </:col>
         <:action :let={{_id, transaction}}>
           <.button phx-click="edit_transaction" phx-value-id={transaction.id}>Editar</.button>
           <.button

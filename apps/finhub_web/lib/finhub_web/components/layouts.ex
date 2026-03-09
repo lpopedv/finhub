@@ -78,6 +78,11 @@ defmodule FinhubWeb.Layouts do
                 <.icon name="hero-arrows-right-left" class="size-4" /> Transações
               </.link>
             </li>
+            <li>
+              <.link navigate={~p"/fixed-transactions"}>
+                <.icon name="hero-arrow-path" class="size-4" /> Transações Fixas
+              </.link>
+            </li>
           </ul>
         </aside>
       </div>

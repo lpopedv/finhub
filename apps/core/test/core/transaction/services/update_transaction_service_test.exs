@@ -20,13 +20,6 @@ defmodule Core.Transaction.Services.UpdateTransactionServiceTest do
       assert updated.value_in_cents == 9999
     end
 
-    test "updates is_fixed", %{transaction: transaction} do
-      assert {:ok, updated} =
-               UpdateTransactionService.execute(transaction.id, %{is_fixed: true})
-
-      assert updated.is_fixed == true
-    end
-
     test "updates category_id", %{transaction: transaction} do
       category = insert(:category, user: transaction.user)
 

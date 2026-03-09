@@ -1,42 +1,39 @@
-defmodule Core.Schemas.Transaction do
+defmodule Core.Schemas.FixedTransaction do
   @moduledoc """
-  Schema representing a financial transaction.
+  Schema representing a recurring transaction rule.
 
-  Transactions are scoped to a user and optionally linked to a category.
+  Fixed transactions define recurring expenses or income by day of month.
+  Concrete transaction entries reference this via `fixed_transaction_id`.
   Values are stored in cents to avoid floating-point precision issues.
   When the associated category is deleted, `category_id` is set to nil.
-  When the associated fixed transaction is deleted, `fixed_transaction_id` is set to nil.
   """
 
   use Core.Schema
 
   alias Core.Schemas.Category
-  alias Core.Schemas.FixedTransaction
   alias Core.Schemas.User
 
-  @required_params [:user_id, :name, :value_in_cents, :date]
-  @optional_params [:category_id, :fixed_transaction_id]
+  @required_params [:user_id, :name, :value_in_cents, :day_of_month]
+  @optional_params [:category_id]
 
   @type t :: %__MODULE__{
           id: Uniq.UUID.formatted(),
           user_id: Uniq.UUID.formatted(),
           category_id: Uniq.UUID.formatted() | nil,
-          fixed_transaction_id: Uniq.UUID.formatted() | nil,
           name: String.t(),
           value_in_cents: integer(),
-          date: Date.t(),
+          day_of_month: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t() | nil
         }
 
-  schema "transactions" do
+  schema "fixed_transactions" do
     field :name, :string
     field :value_in_cents, :integer
-    field :date, :date
+    field :day_of_month, :integer
 
     belongs_to :user, User
     belongs_to :category, Category
-    belongs_to :fixed_transaction, FixedTransaction
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -49,7 +46,7 @@ defmodule Core.Schemas.Transaction do
       |> validate_required(@required_params)
       |> validate_length(:name, max: 255)
       |> validate_number(:value_in_cents, greater_than: 0)
+      |> validate_inclusion(:day_of_month, 1..28)
       |> assoc_constraint(:user)
       |> assoc_constraint(:category)
-      |> assoc_constraint(:fixed_transaction)
 end

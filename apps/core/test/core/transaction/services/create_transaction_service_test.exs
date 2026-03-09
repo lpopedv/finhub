@@ -27,7 +27,6 @@ defmodule Core.Transaction.Services.CreateTransactionServiceTest do
       assert transaction.user_id == command.user_id
       assert transaction.name == command.name
       assert transaction.value_in_cents == command.value_in_cents
-      assert transaction.is_fixed == false
     end
 
     test "persists the transaction to the database", %{command: command} do
@@ -52,18 +51,20 @@ defmodule Core.Transaction.Services.CreateTransactionServiceTest do
       assert transaction.category_id == category.id
     end
 
-    test "creates transaction with is_fixed set to true", %{user: user} do
+    test "creates transaction linked to a fixed transaction", %{user: user} do
+      fixed = insert(:fixed_transaction, user: user)
+
       command =
         CreateTransactionCommand.build!(%{
           user_id: user.id,
-          name: "Rent",
+          name: "Aluguel",
           value_in_cents: 150_000,
-          is_fixed: true,
+          fixed_transaction_id: fixed.id,
           date: ~D[2026-03-08]
         })
 
       assert {:ok, transaction} = CreateTransactionService.execute(command)
-      assert transaction.is_fixed == true
+      assert transaction.fixed_transaction_id == fixed.id
     end
   end
 end

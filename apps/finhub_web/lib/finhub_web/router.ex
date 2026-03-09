@@ -1,6 +1,8 @@
 defmodule FinhubWeb.Router do
   use FinhubWeb, :router
 
+  import Oban.Web.Router
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -26,6 +28,12 @@ defmodule FinhubWeb.Router do
     delete "/sign-out", SessionController, :delete
   end
 
+  scope "/" do
+    pipe_through [:browser, :require_authenticated]
+
+    oban_dashboard("/oban")
+  end
+
   scope "/", FinhubWeb do
     pipe_through [:browser, :require_authenticated]
 
@@ -34,6 +42,7 @@ defmodule FinhubWeb.Router do
       live "/", DashboardLive
       live "/categories", CategoryLive.Index
       live "/transactions", TransactionLive.Index
+      live "/fixed-transactions", FixedTransactionLive.Index
     end
   end
 

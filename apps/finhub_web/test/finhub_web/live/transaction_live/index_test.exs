@@ -49,16 +49,6 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       assert html =~ "Transações"
     end
-
-    test "displays Fixo column with Sim/Não", %{conn: conn, user: user} do
-      insert(:transaction, user: user, name: "Salário", value_in_cents: 500_000, is_fixed: true)
-      insert(:transaction, user: user, name: "Compra", value_in_cents: 5_000, is_fixed: false)
-
-      {:ok, _view, html} = live(conn, ~p"/transactions")
-
-      assert html =~ "Sim"
-      assert html =~ "Não"
-    end
   end
 
   describe "creation modal" do
@@ -193,29 +183,6 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       |> render_submit()
 
       assert render(view) =~ "Transação criada com sucesso!"
-    end
-
-    test "creates transaction with is_fixed marcado", %{conn: conn} do
-      {:ok, view, _html} = live(conn, ~p"/transactions")
-
-      view
-      |> element("button", "Nova Transação")
-      |> render_click()
-
-      view
-      |> form("form", %{
-        "transaction" => %{
-          "name" => "Salário",
-          "value_in_cents" => "500000",
-          "is_fixed" => "true",
-          "date" => "2026-03-08"
-        }
-      })
-      |> render_submit()
-
-      html = render(view)
-      assert html =~ "Transação criada com sucesso!"
-      assert html =~ "Sim"
     end
   end
 
