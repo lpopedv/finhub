@@ -138,7 +138,8 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
         "fixed_transaction" => %{
           "name" => "Netflix",
           "value_in_cents" => "4590",
-          "day_of_month" => "15"
+          "day_of_month" => "15",
+          "type" => "expense"
         }
       })
       |> render_submit()
@@ -166,7 +167,8 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
           "name" => "Netflix",
           "value_in_cents" => "4590",
           "day_of_month" => "15",
-          "category_id" => category.id
+          "category_id" => category.id,
+          "type" => "expense"
         }
       })
       |> render_submit()

@@ -36,7 +36,8 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionService do
         category_id: command.category_id,
         name: command.name,
         value_in_cents: command.value_in_cents,
-        day_of_month: command.day_of_month
+        day_of_month: command.day_of_month,
+        type: command.type
       }
       |> FixedTransaction.changeset()
       |> Repo.insert()
@@ -49,6 +50,7 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionService do
         fixed_transaction_id: fixed_transaction.id,
         name: "#{fixed_transaction.name} - #{Calendar.strftime(today, "%m/%Y")}",
         value_in_cents: fixed_transaction.value_in_cents,
-        date: Date.new!(today.year, today.month, fixed_transaction.day_of_month)
+        date: Date.new!(today.year, today.month, fixed_transaction.day_of_month),
+        type: fixed_transaction.type
       })
 end

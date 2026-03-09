@@ -11,7 +11,8 @@ defmodule Core.Schemas.TransactionTest do
         user_id: user.id,
         name: "Groceries",
         value_in_cents: 5000,
-        date: ~D[2026-03-08]
+        date: ~D[2026-03-08],
+        type: :expense
       }
 
       %{required_params: required_params, user: user}
@@ -28,8 +29,8 @@ defmodule Core.Schemas.TransactionTest do
       assert changeset.valid?
     end
 
-    test "returns a valid changeset with is_fixed set to true", %{required_params: params} do
-      changeset = Transaction.changeset(Map.put(params, :is_fixed, true))
+    test "returns a valid changeset with type set to income", %{required_params: params} do
+      changeset = Transaction.changeset(Map.put(params, :type, :income))
       assert changeset.valid?
     end
 

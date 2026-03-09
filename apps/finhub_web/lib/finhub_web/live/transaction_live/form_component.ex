@@ -19,6 +19,12 @@ defmodule FinhubWeb.TransactionLive.FormComponent do
           <.input field={@form[:date]} type="date" label="Data" />
           <.input field={@form[:value_in_cents]} type="number" label="Valor (centavos)" />
           <.input
+            field={@form[:type]}
+            type="select"
+            label="Tipo"
+            options={[{"Despesa", :expense}, {"Receita", :income}]}
+          />
+          <.input
             field={@form[:category_id]}
             type="select"
             label="Categoria"
@@ -95,7 +101,8 @@ defmodule FinhubWeb.TransactionLive.FormComponent do
       name: params["name"],
       value_in_cents: params["value_in_cents"],
       category_id: params["category_id"],
-      date: params["date"]
+      date: params["date"],
+      type: params["type"]
     }
 
     CreateTransactionService.execute(command)

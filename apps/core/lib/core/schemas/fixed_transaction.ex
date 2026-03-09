@@ -12,9 +12,10 @@ defmodule Core.Schemas.FixedTransaction do
 
   alias Core.Schemas.Category
   alias Core.Schemas.User
+  alias Core.TransactionType
 
-  @required_params [:user_id, :name, :value_in_cents, :day_of_month]
-  @optional_params [:category_id]
+  @required_params [:user_id, :name, :value_in_cents, :day_of_month, :type]
+  @optional_params [:category_id, :active]
 
   @type t :: %__MODULE__{
           id: Uniq.UUID.formatted(),
@@ -23,6 +24,8 @@ defmodule Core.Schemas.FixedTransaction do
           name: String.t(),
           value_in_cents: integer(),
           day_of_month: integer(),
+          type: TransactionType.t(),
+          active: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t() | nil
         }
@@ -31,6 +34,8 @@ defmodule Core.Schemas.FixedTransaction do
     field :name, :string
     field :value_in_cents, :integer
     field :day_of_month, :integer
+    field :type, Ecto.Enum, values: TransactionType.types()
+    field :active, :boolean, default: true
 
     belongs_to :user, User
     belongs_to :category, Category

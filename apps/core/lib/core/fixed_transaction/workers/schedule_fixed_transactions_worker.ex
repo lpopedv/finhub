@@ -23,7 +23,7 @@ defmodule Core.FixedTransaction.Workers.ScheduleFixedTransactionsWorker do
   def perform(%Oban.Job{}) do
     today = Date.utc_today()
 
-    from(ft in FixedTransaction, where: ft.day_of_month == ^today.day)
+    from(ft in FixedTransaction, where: ft.day_of_month == ^today.day and ft.active == true)
     |> Repo.all()
     |> Enum.each(&maybe_create_transaction(&1, today))
 
@@ -39,7 +39,8 @@ defmodule Core.FixedTransaction.Workers.ScheduleFixedTransactionsWorker do
           fixed_transaction_id: ft.id,
           name: "#{ft.name} - #{Calendar.strftime(today, "%m/%Y")}",
           value_in_cents: ft.value_in_cents,
-          date: Date.new!(today.year, today.month, ft.day_of_month)
+          date: Date.new!(today.year, today.month, ft.day_of_month),
+          type: ft.type
         })
 
       CreateTransactionService.execute(command)

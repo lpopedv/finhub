@@ -14,7 +14,9 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
 
   use Core.EmbeddedSchema
 
-  @required_params [:user_id, :name, :value_in_cents, :date]
+  alias Core.TransactionType
+
+  @required_params [:user_id, :name, :value_in_cents, :date, :type]
   @optional_params [:category_id, :fixed_transaction_id]
 
   @type t :: %__MODULE__{
@@ -23,7 +25,8 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
           fixed_transaction_id: String.t() | nil,
           name: String.t(),
           value_in_cents: integer(),
-          date: Date.t()
+          date: Date.t(),
+          type: TransactionType.t()
         }
 
   embedded_schema do
@@ -33,6 +36,7 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
     field(:name, :string)
     field(:value_in_cents, :integer)
     field(:date, :date)
+    field(:type, Ecto.Enum, values: TransactionType.types())
   end
 
   @spec changeset(map()) :: Ecto.Changeset.t()

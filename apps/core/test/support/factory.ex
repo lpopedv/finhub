@@ -28,7 +28,8 @@ defmodule Core.Factory do
       category: nil,
       name: sequence(:name, &"Fixed Transaction #{&1}"),
       value_in_cents: 1000,
-      day_of_month: 5
+      day_of_month: 5,
+      type: :expense
     }
   end
 
@@ -38,7 +39,8 @@ defmodule Core.Factory do
       category: nil,
       name: sequence(:name, &"Transaction #{&1}"),
       value_in_cents: 1000,
-      date: Date.utc_today()
+      date: Date.utc_today(),
+      type: :expense
     }
   end
 end

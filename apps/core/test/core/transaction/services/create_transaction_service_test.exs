@@ -13,7 +13,8 @@ defmodule Core.Transaction.Services.CreateTransactionServiceTest do
         user_id: user.id,
         name: "Groceries",
         value_in_cents: 5000,
-        date: ~D[2026-03-08]
+        date: ~D[2026-03-08],
+        type: :expense
       })
 
     %{command: command, user: user}
@@ -44,7 +45,8 @@ defmodule Core.Transaction.Services.CreateTransactionServiceTest do
           name: "Dinner",
           value_in_cents: 8000,
           category_id: category.id,
-          date: ~D[2026-03-08]
+          date: ~D[2026-03-08],
+          type: :expense
         })
 
       assert {:ok, transaction} = CreateTransactionService.execute(command)
@@ -60,7 +62,8 @@ defmodule Core.Transaction.Services.CreateTransactionServiceTest do
           name: "Aluguel",
           value_in_cents: 150_000,
           fixed_transaction_id: fixed.id,
-          date: ~D[2026-03-08]
+          date: ~D[2026-03-08],
+          type: :expense
         })
 
       assert {:ok, transaction} = CreateTransactionService.execute(command)

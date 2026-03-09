@@ -14,7 +14,8 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionServiceTest do
         user_id: user.id,
         name: "Aluguel",
         value_in_cents: 150_000,
-        day_of_month: 5
+        day_of_month: 5,
+        type: :expense
       })
 
     %{command: command, user: user}
@@ -59,7 +60,8 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionServiceTest do
           name: "Netflix",
           value_in_cents: 4_590,
           day_of_month: 15,
-          category_id: category.id
+          category_id: category.id,
+          type: :expense
         })
 
       {:ok, ft} = CreateFixedTransactionService.execute(command)
@@ -76,7 +78,8 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionServiceTest do
           user_id: Ecto.UUID.generate(),
           name: "Inválido",
           value_in_cents: 1000,
-          day_of_month: 5
+          day_of_month: 5,
+          type: :expense
         })
 
       assert {:error, _changeset} = CreateFixedTransactionService.execute(command)

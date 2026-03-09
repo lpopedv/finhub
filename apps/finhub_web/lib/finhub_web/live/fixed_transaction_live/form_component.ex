@@ -19,6 +19,12 @@ defmodule FinhubWeb.FixedTransactionLive.FormComponent do
           <.input field={@form[:day_of_month]} type="number" label="Dia do Mês" />
           <.input field={@form[:value_in_cents]} type="number" label="Valor (centavos)" />
           <.input
+            field={@form[:type]}
+            type="select"
+            label="Tipo"
+            options={[{"Despesa", :expense}, {"Receita", :income}]}
+          />
+          <.input
             field={@form[:category_id]}
             type="select"
             label="Categoria"
@@ -98,7 +104,8 @@ defmodule FinhubWeb.FixedTransactionLive.FormComponent do
       name: params["name"],
       value_in_cents: params["value_in_cents"],
       category_id: params["category_id"],
-      day_of_month: params["day_of_month"]
+      day_of_month: params["day_of_month"],
+      type: params["type"]
     }
 
     CreateFixedTransactionService.execute(command)

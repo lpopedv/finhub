@@ -113,7 +113,8 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
         "transaction" => %{
           "name" => "Aluguel",
           "value_in_cents" => "150000",
-          "date" => "2026-03-08"
+          "date" => "2026-03-08",
+          "type" => "expense"
         }
       })
       |> render_submit()
@@ -156,7 +157,8 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
           "name" => "Aluguel",
           "value_in_cents" => "150000",
           "category_id" => category.id,
-          "date" => "2026-03-08"
+          "date" => "2026-03-08",
+          "type" => "expense"
         }
       })
       |> render_submit()
@@ -177,7 +179,8 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
           "name" => "Salário",
           "value_in_cents" => "500000",
           "category_id" => "",
-          "date" => "2026-03-08"
+          "date" => "2026-03-08",
+          "type" => "income"
         }
       })
       |> render_submit()
