@@ -30,9 +30,9 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       {:ok, _view, html} = live(conn, ~p"/transactions")
 
       assert html =~ "Aluguel"
-      assert html =~ "150000"
+      assert html =~ "R$ 1500,00"
       assert html =~ "Internet"
-      assert html =~ "10000"
+      assert html =~ "R$ 100,00"
     end
 
     test "does not display other user's transactions", %{conn: conn} do
@@ -122,7 +122,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       html = render(view)
 
       assert html =~ "Aluguel"
-      assert html =~ "150000"
+      assert html =~ "R$ 1500,00"
       assert html =~ "Transação criada com sucesso!"
       refute html =~ "modal-open"
     end
@@ -232,7 +232,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       html = render(view)
 
       assert html =~ "Aluguel Novo"
-      assert html =~ "200000"
+      assert html =~ "R$ 2000,00"
       assert html =~ "Transação atualizada com sucesso!"
       refute html =~ "modal-open"
     end

@@ -81,6 +81,7 @@ defmodule FinhubWeb do
       import Phoenix.HTML
       # Core UI components
       import FinhubWeb.CoreComponents
+      import FinhubWeb.Helpers.Currency
 
       # Common modules used in templates
       alias FinhubWeb.Layouts

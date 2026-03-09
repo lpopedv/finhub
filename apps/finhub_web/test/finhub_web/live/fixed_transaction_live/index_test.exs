@@ -35,7 +35,7 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
       {:ok, _view, html} = live(conn, ~p"/fixed-transactions")
 
       assert html =~ "Netflix"
-      assert html =~ "4590"
+      assert html =~ "R$ 45,90"
       assert html =~ "15"
     end
 
@@ -147,7 +147,7 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
       html = render(view)
 
       assert html =~ "Netflix"
-      assert html =~ "4590"
+      assert html =~ "R$ 45,90"
       assert html =~ "Transação fixa criada com sucesso!"
       refute html =~ "modal-open"
     end
@@ -227,7 +227,7 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
       html = render(view)
 
       assert html =~ "Netflix Premium"
-      assert html =~ "5590"
+      assert html =~ "R$ 55,90"
       assert html =~ "Transação fixa atualizada com sucesso!"
       refute html =~ "modal-open"
     end

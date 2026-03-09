@@ -117,7 +117,7 @@ defmodule FinhubWeb.FixedTransactionLive.Index do
       <.table id="fixed-transactions" rows={@streams.fixed_transactions}>
         <:col :let={{_id, ft}} label="Nome">{ft.name}</:col>
         <:col :let={{_id, ft}} label="Dia do Mês">{ft.day_of_month}</:col>
-        <:col :let={{_id, ft}} label="Valor (centavos)">{ft.value_in_cents}</:col>
+        <:col :let={{_id, ft}} label="Valor">{format_brl(ft.value_in_cents)}</:col>
         <:action :let={{_id, ft}}>
           <.button phx-click="edit_fixed_transaction" phx-value-id={ft.id}>Editar</.button>
           <.button

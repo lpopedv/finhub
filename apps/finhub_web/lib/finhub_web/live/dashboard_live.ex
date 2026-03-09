@@ -23,22 +23,17 @@ defmodule FinhubWeb.DashboardLive do
       <div class="stats stats-vertical sm:stats-horizontal shadow mt-8 w-full">
         <div class="stat">
           <div class="stat-title">Gastos fixos mensais</div>
-          <div class="stat-value">{format_currency(@summary.fixed_expenses_total)}</div>
+          <div class="stat-value">{format_brl(@summary.fixed_expenses_total)}</div>
           <div class="stat-desc">Recorrências ativas</div>
         </div>
 
         <div class="stat">
           <div class="stat-title">Projeção do próximo mês</div>
-          <div class="stat-value">{format_currency(@summary.next_month_projected_expenses)}</div>
+          <div class="stat-value">{format_brl(@summary.next_month_projected_expenses)}</div>
           <div class="stat-desc">Fixos + despesas variáveis já lançadas</div>
         </div>
       </div>
     </Layouts.app>
     """
-  end
-
-  defp format_currency(cents) do
-    value = cents / 100
-    :erlang.float_to_binary(value, decimals: 2) |> then(&"R$ #{String.replace(&1, ".", ",")}")
   end
 end

@@ -119,7 +119,7 @@ defmodule FinhubWeb.TransactionLive.Index do
         <:col :let={{_id, transaction}} label="Data">
           {Calendar.strftime(transaction.date, "%d/%m/%Y")}
         </:col>
-        <:col :let={{_id, transaction}} label="Valor (centavos)">{transaction.value_in_cents}</:col>
+        <:col :let={{_id, transaction}} label="Valor">{format_brl(transaction.value_in_cents)}</:col>
         <:action :let={{_id, transaction}}>
           <.button phx-click="edit_transaction" phx-value-id={transaction.id}>Editar</.button>
           <.button
