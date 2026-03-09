@@ -4,6 +4,7 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionServiceTest do
   alias Core.FixedTransaction.Commands.CreateFixedTransactionCommand
   alias Core.FixedTransaction.Services.CreateFixedTransactionService
   alias Core.Schemas.FixedTransaction
+  alias Core.Schemas.Transaction
 
   setup do
     user = insert(:user)
@@ -36,7 +37,20 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionServiceTest do
       assert Repo.get(FixedTransaction, ft.id)
     end
 
-    test "creates fixed transaction with category", %{user: user} do
+    test "also creates a transaction for the current month", %{command: command} do
+      today = Date.utc_today()
+
+      {:ok, ft} = CreateFixedTransactionService.execute(command)
+
+      transaction = Repo.get_by!(Transaction, fixed_transaction_id: ft.id)
+      assert transaction.user_id == ft.user_id
+      assert transaction.value_in_cents == ft.value_in_cents
+      assert transaction.fixed_transaction_id == ft.id
+      assert transaction.date == Date.new!(today.year, today.month, ft.day_of_month)
+      assert transaction.name == "#{ft.name} - #{Calendar.strftime(today, "%m/%Y")}"
+    end
+
+    test "propagates category to the created transaction", %{user: user} do
       category = insert(:category, user: user)
 
       command =
@@ -48,8 +62,26 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionServiceTest do
           category_id: category.id
         })
 
-      assert {:ok, ft} = CreateFixedTransactionService.execute(command)
+      {:ok, ft} = CreateFixedTransactionService.execute(command)
+
       assert ft.category_id == category.id
+
+      transaction = Repo.get_by!(Transaction, fixed_transaction_id: ft.id)
+      assert transaction.category_id == category.id
+    end
+
+    test "rolls back both inserts if fixed transaction fails" do
+      command =
+        CreateFixedTransactionCommand.build!(%{
+          user_id: Ecto.UUID.generate(),
+          name: "Inválido",
+          value_in_cents: 1000,
+          day_of_month: 5
+        })
+
+      assert {:error, _changeset} = CreateFixedTransactionService.execute(command)
+      assert Repo.aggregate(FixedTransaction, :count) == 0
+      assert Repo.aggregate(Transaction, :count) == 0
     end
 
     test "returns error for day_of_month below 1", %{user: user} do
