@@ -66,7 +66,14 @@ config :logger, :default_formatter,
 # Configure Oban
 config :core, Oban,
   repo: Core.Repo,
-  queues: [default: 10]
+  queues: [default: 10],
+  plugins: [
+    Oban.Plugins.Pruner,
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"0 6 * * *", Core.FixedTransaction.Workers.ScheduleFixedTransactionsWorker}
+     ]}
+  ]
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
