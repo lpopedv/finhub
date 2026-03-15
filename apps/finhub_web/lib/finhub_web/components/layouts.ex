@@ -83,6 +83,11 @@ defmodule FinhubWeb.Layouts do
                 <.icon name="hero-arrow-path" class="size-4" /> Transações Fixas
               </.link>
             </li>
+            <li>
+              <.link navigate={~p"/monthly-report"}>
+                <.icon name="hero-chart-bar" class="size-4" /> Resumo Mensal
+              </.link>
+            </li>
           </ul>
         </aside>
       </div>

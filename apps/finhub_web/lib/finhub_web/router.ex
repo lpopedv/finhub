@@ -43,6 +43,7 @@ defmodule FinhubWeb.Router do
       live "/categories", CategoryLive.Index
       live "/transactions", TransactionLive.Index
       live "/fixed-transactions", FixedTransactionLive.Index
+      live "/monthly-report", MonthlyReportLive
     end
   end
 
