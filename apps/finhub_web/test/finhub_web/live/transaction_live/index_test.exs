@@ -95,7 +95,9 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       html =
         view
-        |> form("form", %{"transaction" => %{"name" => "", "value_in_cents" => "1000"}})
+        |> form("form[phx-submit='save']", %{
+          "transaction" => %{"name" => "", "value_in_cents" => "1000"}
+        })
         |> render_submit()
 
       assert html =~ "can&#39;t be blank"
@@ -109,7 +111,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       |> render_click()
 
       view
-      |> form("form", %{
+      |> form("form[phx-submit='save']", %{
         "transaction" => %{
           "name" => "Aluguel",
           "value_in_cents" => "150000",
@@ -136,7 +138,9 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       html =
         view
-        |> form("form", %{"transaction" => %{"name" => "", "value_in_cents" => ""}})
+        |> form("form[phx-submit='save']", %{
+          "transaction" => %{"name" => "", "value_in_cents" => ""}
+        })
         |> render_change()
 
       assert html =~ "can&#39;t be blank"
@@ -152,7 +156,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       |> render_click()
 
       view
-      |> form("form", %{
+      |> form("form[phx-submit='save']", %{
         "transaction" => %{
           "name" => "Aluguel",
           "value_in_cents" => "150000",
@@ -174,7 +178,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       |> render_click()
 
       view
-      |> form("form", %{
+      |> form("form[phx-submit='save']", %{
         "transaction" => %{
           "name" => "Salário",
           "value_in_cents" => "500000",
@@ -224,7 +228,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       |> render_click()
 
       view
-      |> form("form", %{
+      |> form("form[phx-submit='save']", %{
         "transaction" => %{"name" => "Aluguel Novo", "value_in_cents" => "200000"}
       })
       |> render_submit()
@@ -248,7 +252,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       html =
         view
-        |> form("form", %{"transaction" => %{"name" => ""}})
+        |> form("form[phx-submit='save']", %{"transaction" => %{"name" => ""}})
         |> render_submit()
 
       assert html =~ "can&#39;t be blank"

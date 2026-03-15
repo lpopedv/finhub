@@ -4,6 +4,7 @@ defmodule FinhubWeb.TransactionLive.Index do
   alias Core.Category.Services.ListCategoriesService
   alias Core.Repo
   alias Core.Schemas.Transaction
+  alias Core.Transaction.Commands.ListTransactionsCommand
   alias Core.Transaction.Services.DeleteTransactionService
   alias Core.Transaction.Services.ListTransactionsService
   alias FinhubWeb.TransactionLive.FormComponent
@@ -11,7 +12,7 @@ defmodule FinhubWeb.TransactionLive.Index do
   @spec mount(map(), map(), Phoenix.LiveView.Socket.t()) :: {:ok, Phoenix.LiveView.Socket.t()}
   def mount(_params, _session, socket) do
     user_id = socket.assigns.current_user.id
-    transactions = ListTransactionsService.execute(user_id)
+    transactions = list_transactions(user_id, "")
     categories = ListCategoriesService.execute(user_id)
     category_options = Enum.map(categories, &{&1.name, &1.id})
 
@@ -21,6 +22,7 @@ defmodule FinhubWeb.TransactionLive.Index do
       |> assign(:form_action, nil)
       |> assign(:editing_transaction, nil)
       |> assign(:category_options, category_options)
+      |> assign(:search, "")
       |> stream(:transactions, transactions)
 
     {:ok, socket}
@@ -28,6 +30,15 @@ defmodule FinhubWeb.TransactionLive.Index do
 
   @spec handle_event(String.t(), map(), Phoenix.LiveView.Socket.t()) ::
           {:noreply, Phoenix.LiveView.Socket.t()}
+  def handle_event("search", %{"search" => search}, socket) do
+    transactions = list_transactions(socket.assigns.current_user.id, search)
+
+    {:noreply,
+     socket
+     |> assign(:search, search)
+     |> stream(:transactions, transactions, reset: true)}
+  end
+
   def handle_event("new_transaction", _params, socket),
     do:
       {:noreply,
@@ -87,6 +98,8 @@ defmodule FinhubWeb.TransactionLive.Index do
         :edit -> "Transação atualizada com sucesso!"
       end
 
+    transaction = Repo.preload(transaction, :category)
+
     {:noreply,
      socket
      |> stream_insert(:transactions, transaction)
@@ -114,12 +127,22 @@ defmodule FinhubWeb.TransactionLive.Index do
         </:actions>
       </.header>
 
+      <form phx-change="search" class="mt-6">
+        <.input type="text" name="search" value={@search} label="Buscar" phx-debounce="300" />
+      </form>
+
       <.table id="transactions" rows={@streams.transactions}>
         <:col :let={{_id, transaction}} label="Nome">{transaction.name}</:col>
         <:col :let={{_id, transaction}} label="Data">
           {Calendar.strftime(transaction.date, "%d/%m/%Y")}
         </:col>
         <:col :let={{_id, transaction}} label="Valor">{format_brl(transaction.value_in_cents)}</:col>
+        <:col :let={{_id, transaction}} label="Categoria">
+          {if transaction.category, do: transaction.category.name, else: "—"}
+        </:col>
+        <:col :let={{_id, transaction}} label="Fixa">
+          {if transaction.fixed_transaction_id, do: "Sim", else: "Não"}
+        </:col>
         <:action :let={{_id, transaction}}>
           <.button phx-click="edit_transaction" phx-value-id={transaction.id}>Editar</.button>
           <.button
@@ -143,5 +166,10 @@ defmodule FinhubWeb.TransactionLive.Index do
       />
     </Layouts.app>
     """
+  end
+
+  defp list_transactions(user_id, search) do
+    command = ListTransactionsCommand.build!(%{user_id: user_id, search: search})
+    ListTransactionsService.execute(command)
   end
 end

@@ -3,21 +3,38 @@ defmodule Core.Transaction.Services.ListTransactionsService do
   Service for listing transactions of a user.
 
   Returns transactions ordered by transaction date, most recent first.
+  Category is preloaded. The `search` filter matches against transaction name
+  and category name (case-insensitive substring match).
   """
 
   import Ecto.Query
 
   alias Core.Repo
+  alias Core.Schemas.Category
   alias Core.Schemas.Transaction
+  alias Core.Transaction.Commands.ListTransactionsCommand
 
-  @spec execute(String.t()) :: {:ok, [Transaction.t()]}
-  def execute(user_id) do
-    queryable =
+  @spec execute(ListTransactionsCommand.t()) :: [Transaction.t()]
+  def execute(%ListTransactionsCommand{} = command),
+    do:
       from(t in Transaction,
-        where: t.user_id == ^user_id,
-        order_by: [desc: t.date, desc: t.inserted_at]
+        left_join: c in Category,
+        on: t.category_id == c.id,
+        where: t.user_id == ^command.user_id,
+        order_by: [desc: t.date, desc: t.inserted_at],
+        preload: [:category]
       )
+      |> maybe_filter_search(command.search)
+      |> Repo.all()
 
-    Repo.all(queryable)
-  end
+  defp maybe_filter_search(queryable, nil), do: queryable
+  defp maybe_filter_search(queryable, ""), do: queryable
+
+  defp maybe_filter_search(queryable, search),
+    do:
+      where(
+        queryable,
+        [t, c],
+        ilike(t.name, ^"%#{search}%") or ilike(c.name, ^"%#{search}%")
+      )
 end
