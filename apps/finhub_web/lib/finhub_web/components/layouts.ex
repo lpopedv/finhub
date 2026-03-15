@@ -88,6 +88,11 @@ defmodule FinhubWeb.Layouts do
                 <.icon name="hero-chart-bar" class="size-4" /> Resumo Mensal
               </.link>
             </li>
+            <li>
+              <.link navigate={~p"/projections"}>
+                <.icon name="hero-calendar-days" class="size-4" /> Projeções
+              </.link>
+            </li>
           </ul>
         </aside>
       </div>
