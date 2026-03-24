@@ -15,17 +15,20 @@ defmodule Core.Transaction.Services.ListTransactionsService do
   alias Core.Transaction.Commands.ListTransactionsCommand
 
   @spec execute(ListTransactionsCommand.t()) :: [Transaction.t()]
-  def execute(%ListTransactionsCommand{} = command),
-    do:
+  def execute(%ListTransactionsCommand{user_id: user_id, search: search}) do
+    queryable =
       from(t in Transaction,
         left_join: c in Category,
         on: t.category_id == c.id,
-        where: t.user_id == ^command.user_id,
+        where: t.user_id == ^user_id,
         order_by: [desc: t.date, desc: t.inserted_at],
         preload: [:category]
       )
-      |> maybe_filter_search(command.search)
-      |> Repo.all()
+
+    queryable
+    |> maybe_filter_search(search)
+    |> Repo.all()
+  end
 
   defp maybe_filter_search(queryable, nil), do: queryable
   defp maybe_filter_search(queryable, ""), do: queryable
