@@ -23,9 +23,8 @@ defmodule Core.FixedTransaction.Services.CreateFixedTransactionService do
     Repo.transact(fn ->
       with {:ok, fixed_transaction} <- insert_fixed_transaction(command),
            {:ok, _transaction} <-
-             CreateTransactionService.execute(transaction_command(fixed_transaction, today)) do
-        {:ok, fixed_transaction}
-      end
+             CreateTransactionService.execute(transaction_command(fixed_transaction, today)),
+           do: {:ok, fixed_transaction}
     end)
   end
 

@@ -23,7 +23,10 @@ defmodule Core.FixedTransaction.Workers.ScheduleFixedTransactionsWorker do
   def perform(%Oban.Job{}) do
     today = Date.utc_today()
 
-    from(ft in FixedTransaction, where: ft.day_of_month == ^today.day and ft.active == true)
+    queryable =
+      from(ft in FixedTransaction, where: ft.day_of_month == ^today.day and ft.active == true)
+
+    queryable
     |> Repo.all()
     |> Enum.each(&maybe_create_transaction(&1, today))
 

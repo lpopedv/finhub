@@ -12,10 +12,11 @@ defmodule Core.FixedTransaction.Services.ListFixedTransactionsService do
 
   @spec execute(String.t()) :: [FixedTransaction.t()]
   def execute(user_id) do
-    from(ft in FixedTransaction,
+    queryable = from(ft in FixedTransaction,
       where: ft.user_id == ^user_id,
       order_by: [asc: ft.day_of_month, desc: ft.inserted_at]
     )
-    |> Repo.all()
+
+     Repo.all(queryable)
   end
 end
