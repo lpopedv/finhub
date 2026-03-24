@@ -1,4 +1,4 @@
-defmodule Core.Transaction.Commands.SumTransactionsByMonthCommand do
+defmodule Core.Transaction.Commands.GetTransactionsTotalsByMonthCommand do
   @moduledoc """
   Command for summing transactions grouped by month.
 
