@@ -28,7 +28,7 @@ defmodule Core.Transaction.Commands.SumTransactionsByMonthCommand do
     field(:user_id, :string)
     field(:date_start, :date)
     field(:date_end, :date)
-    field(:type, Ecto.Enum, values: TransactionType.types())
+    field(:type, Ecto.Enum, values: TransactionType.all())
   end
 
   @spec changeset(map()) :: Ecto.Changeset.t()

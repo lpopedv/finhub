@@ -33,7 +33,7 @@ defmodule Core.FixedTransaction.Commands.CreateFixedTransactionCommand do
     field(:name, :string)
     field(:value_in_cents, :integer)
     field(:day_of_month, :integer)
-    field(:type, Ecto.Enum, values: TransactionType.types())
+    field(:type, Ecto.Enum, values: TransactionType.all())
   end
 
   @spec changeset(map()) :: Ecto.Changeset.t()

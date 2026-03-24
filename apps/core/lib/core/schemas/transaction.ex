@@ -35,7 +35,7 @@ defmodule Core.Schemas.Transaction do
     field :name, :string
     field :value_in_cents, :integer
     field :date, :date
-    field :type, Ecto.Enum, values: TransactionType.types()
+    field :type, Ecto.Enum, values: TransactionType.all()
 
     belongs_to :user, User
     belongs_to :category, Category
