@@ -13,10 +13,7 @@ defmodule Core.Transaction.Services.UpdateTransactionService do
           {:ok, Transaction.t()} | {:error, :not_found} | {:error, Ecto.Changeset.t()}
   def execute(id, params) do
     with {:ok, transaction} <- get_transaction(id),
-         do:
-           transaction
-           |> Transaction.changeset(params)
-           |> Repo.update()
+         do: update_transaction(transaction, params)
   end
 
   defp get_transaction(id) do
@@ -25,4 +22,10 @@ defmodule Core.Transaction.Services.UpdateTransactionService do
       transaction -> {:ok, transaction}
     end
   end
+
+  defp update_transaction(transaction, params),
+    do:
+      transaction
+      |> Transaction.changeset(params)
+      |> Repo.update()
 end

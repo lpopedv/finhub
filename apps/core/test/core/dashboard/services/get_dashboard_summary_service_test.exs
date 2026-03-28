@@ -9,7 +9,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryServiceTest do
 
   describe "execute/1" do
     test "returns zeros when user has no data", %{user: user} do
-      assert %{fixed_expenses_total: 0, next_month_projected_expenses: 0} =
+      assert %{fixed_expenses_total: 0, next_month_expenses_total: 0} =
                GetDashboardSummaryService.execute(user.id)
     end
 
@@ -65,7 +65,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryServiceTest do
 
       result = GetDashboardSummaryService.execute(user.id)
 
-      assert result.next_month_projected_expenses == result.fixed_expenses_total
+      assert result.next_month_expenses_total == result.fixed_expenses_total
     end
 
     test "adds variable expense transactions for next month to the projection", %{user: user} do
@@ -74,7 +74,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryServiceTest do
       insert(:fixed_transaction, user: user, value_in_cents: 50_000, active: true, type: :expense)
       insert(:transaction, user: user, value_in_cents: 15_000, type: :expense, date: next_month)
 
-      assert %{next_month_projected_expenses: 65_000} =
+      assert %{next_month_expenses_total: 65_000} =
                GetDashboardSummaryService.execute(user.id)
     end
 
@@ -84,7 +84,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryServiceTest do
       insert(:fixed_transaction, user: user, value_in_cents: 50_000, active: true, type: :expense)
       insert(:transaction, user: user, value_in_cents: 300_000, type: :income, date: next_month)
 
-      assert %{next_month_projected_expenses: 50_000} =
+      assert %{next_month_expenses_total: 50_000} =
                GetDashboardSummaryService.execute(user.id)
     end
 
@@ -98,7 +98,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryServiceTest do
         date: Date.utc_today()
       )
 
-      assert %{next_month_projected_expenses: 50_000} =
+      assert %{next_month_expenses_total: 50_000} =
                GetDashboardSummaryService.execute(user.id)
     end
 
@@ -124,7 +124,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryServiceTest do
 
       result = GetDashboardSummaryService.execute(user.id)
 
-      assert result.next_month_projected_expenses == result.fixed_expenses_total
+      assert result.next_month_expenses_total == result.fixed_expenses_total
     end
 
     test "does not include another user's variable transactions in projection", %{user: user} do
@@ -140,7 +140,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryServiceTest do
         date: next_month
       )
 
-      assert %{next_month_projected_expenses: 10_000} =
+      assert %{next_month_expenses_total: 10_000} =
                GetDashboardSummaryService.execute(user.id)
     end
   end

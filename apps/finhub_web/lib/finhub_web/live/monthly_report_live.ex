@@ -1,8 +1,8 @@
 defmodule FinhubWeb.MonthlyReportLive do
   use FinhubWeb, :live_view
 
-  alias Core.Transaction.Commands.SumTransactionsByMonthCommand
-  alias Core.Transaction.Services.SumTransactionsByMonthService
+  alias Core.Transaction.Commands.GetTransactionsTotalsByMonthCommand
+  alias Core.Transaction.Services.GetTransactionsTotalsByMonthService
 
   @spec mount(map(), map(), Phoenix.LiveView.Socket.t()) ::
           {:ok, Phoenix.LiveView.Socket.t()}
@@ -87,14 +87,14 @@ defmodule FinhubWeb.MonthlyReportLive do
     date_end = %Date{year: today.year, month: 12, day: 31}
 
     command =
-      SumTransactionsByMonthCommand.build!(%{
+      GetTransactionsTotalsByMonthCommand.build!(%{
         user_id: user_id,
         date_start: date_start,
         date_end: date_end,
         type: type
       })
 
-    {:ok, totals} = SumTransactionsByMonthService.execute(command)
+    {:ok, totals} = GetTransactionsTotalsByMonthService.execute(command)
     totals
   end
 

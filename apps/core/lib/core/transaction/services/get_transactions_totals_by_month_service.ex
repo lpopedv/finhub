@@ -1,4 +1,4 @@
-defmodule Core.Transaction.Services.SumTransactionsByMonthService do
+defmodule Core.Transaction.Services.GetTransactionsTotalsByMonthService do
   @moduledoc """
   Service for summing transactions grouped by month within a date range.
 
@@ -10,12 +10,12 @@ defmodule Core.Transaction.Services.SumTransactionsByMonthService do
 
   alias Core.Repo
   alias Core.Schemas.Transaction
-  alias Core.Transaction.Commands.SumTransactionsByMonthCommand
+  alias Core.Transaction.Commands.GetTransactionsTotalsByMonthCommand
 
-  @spec execute(SumTransactionsByMonthCommand.t()) ::
+  @spec execute(GetTransactionsTotalsByMonthCommand.t()) ::
           {:ok, [%{month: Date.t(), total_in_cents: integer()}]}
-  def execute(%SumTransactionsByMonthCommand{} = command) do
-    initial_query =
+  def execute(%GetTransactionsTotalsByMonthCommand{} = command) do
+    queryable =
       from(t in Transaction,
         where: t.user_id == ^command.user_id,
         where: t.date >= ^command.date_start,
@@ -28,9 +28,12 @@ defmodule Core.Transaction.Services.SumTransactionsByMonthService do
         }
       )
 
-    result = maybe_filter_type(initial_query, command.type)
+    result =
+      queryable
+      |> maybe_filter_type(command.type)
+      |> Repo.all()
 
-    {:ok, Repo.all(result)}
+    {:ok, result}
   end
 
   defp maybe_filter_type(queryable, nil), do: queryable

@@ -10,6 +10,6 @@ defmodule Core.TransactionType do
   @doc """
   Returns the list of transaction types.
   """
-  @spec types() :: [t()]
-  def types, do: @types
+  @spec all() :: [t()]
+  def all, do: @types
 end

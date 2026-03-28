@@ -3,7 +3,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryService do
   Returns a summary of financial data for the dashboard.
 
   - `fixed_expenses_total`: sum of all active fixed expense transactions (monthly commitment).
-  - `next_month_projected_expenses`: fixed expenses + any variable expenses already entered for next month.
+  - `next_month_expenses_total`: fixed expenses + any variable expenses already entered for next month.
   """
 
   import Ecto.Query
@@ -14,7 +14,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryService do
 
   @type summary :: %{
           fixed_expenses_total: non_neg_integer(),
-          next_month_projected_expenses: non_neg_integer()
+          next_month_expenses_total: non_neg_integer()
         }
 
   @spec execute(String.t()) :: summary()
@@ -32,7 +32,7 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryService do
 
     fixed_total = Repo.one(fixed_total_queryable)
 
-    next_month_variable_queryable =
+    next_month_expenses_total_queryable =
       from(t in Transaction,
         where:
           t.user_id == ^user_id and
@@ -43,11 +43,11 @@ defmodule Core.Dashboard.Services.GetDashboardSummaryService do
         select: coalesce(sum(t.value_in_cents), 0)
       )
 
-    next_month_variable = Repo.one(next_month_variable_queryable)
+    next_month_expenses_total = Repo.one(next_month_expenses_total_queryable)
 
     %{
       fixed_expenses_total: fixed_total,
-      next_month_projected_expenses: fixed_total + next_month_variable
+      next_month_expenses_total: fixed_total + next_month_expenses_total
     }
   end
 end

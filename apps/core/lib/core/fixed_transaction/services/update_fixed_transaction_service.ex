@@ -13,10 +13,7 @@ defmodule Core.FixedTransaction.Services.UpdateFixedTransactionService do
           {:ok, FixedTransaction.t()} | {:error, :not_found} | {:error, Ecto.Changeset.t()}
   def execute(id, params) do
     with {:ok, fixed_transaction} <- get_fixed_transaction(id),
-         do:
-           fixed_transaction
-           |> FixedTransaction.changeset(params)
-           |> Repo.update()
+         do: update_fixed_transaction(fixed_transaction, params)
   end
 
   defp get_fixed_transaction(id) do
@@ -25,4 +22,10 @@ defmodule Core.FixedTransaction.Services.UpdateFixedTransactionService do
       fixed_transaction -> {:ok, fixed_transaction}
     end
   end
+
+  defp update_fixed_transaction(fixed_transaction, params),
+    do:
+      fixed_transaction
+      |> FixedTransaction.changeset(params)
+      |> Repo.update()
 end

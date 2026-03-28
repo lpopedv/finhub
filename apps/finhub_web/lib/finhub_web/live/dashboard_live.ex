@@ -6,7 +6,8 @@ defmodule FinhubWeb.DashboardLive do
   @spec mount(map(), map(), Phoenix.LiveView.Socket.t()) ::
           {:ok, Phoenix.LiveView.Socket.t()}
   def mount(_params, _session, socket) do
-    summary = GetDashboardSummaryService.execute(socket.assigns.current_user.id)
+    user_id = socket.assigns.current_user.id
+    summary = GetDashboardSummaryService.execute(user_id)
 
     {:ok,
      socket
@@ -29,7 +30,7 @@ defmodule FinhubWeb.DashboardLive do
 
         <div class="stat">
           <div class="stat-title">Projeção do próximo mês</div>
-          <div class="stat-value">{format_brl(@summary.next_month_projected_expenses)}</div>
+          <div class="stat-value">{format_brl(@summary.next_month_expenses_total)}</div>
           <div class="stat-desc">Fixos + despesas variáveis já lançadas</div>
         </div>
       </div>

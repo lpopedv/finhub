@@ -36,7 +36,7 @@ defmodule Core.Transaction.Commands.CreateTransactionCommand do
     field(:name, :string)
     field(:value_in_cents, :integer)
     field(:date, :date)
-    field(:type, Ecto.Enum, values: TransactionType.types())
+    field(:type, Ecto.Enum, values: TransactionType.all())
   end
 
   @spec changeset(map()) :: Ecto.Changeset.t()

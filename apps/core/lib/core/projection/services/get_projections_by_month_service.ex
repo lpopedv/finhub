@@ -18,36 +18,45 @@ defmodule Core.Projection.Services.GetProjectionsByMonthService do
 
   @spec execute(GetProjectionsByMonthCommand.t()) ::
           {:ok, [%{month: Date.t(), projected_in_cents: integer()}]}
-  def execute(%GetProjectionsByMonthCommand{} = command) do
-    fixed_total = fetch_fixed_total(command)
-    variable_by_month = fetch_variable_by_month(command)
+  def execute(%GetProjectionsByMonthCommand{date_start: date_start, date_end: date_end} = command) do
+    fixed_total = get_fixed_total(command)
 
     projections =
-      build_projections(command.date_start, command.date_end, fixed_total, variable_by_month)
+      command
+      |> get_transaction_totals_by_month()
+      |> fill_missing_months(date_start, date_end)
+      |> Enum.map(fn {month, total} ->
+        %{month: month, projected_in_cents: fixed_total + total}
+      end)
 
     {:ok, projections}
   end
 
-  defp fetch_fixed_total(command) do
-    query =
+  defp get_fixed_total(%GetProjectionsByMonthCommand{user_id: user_id, type: type}) do
+    queryable =
       from(ft in FixedTransaction,
-        where: ft.user_id == ^command.user_id,
+        where: ft.user_id == ^user_id,
         where: ft.active == true,
         select: coalesce(sum(ft.value_in_cents), 0)
       )
 
-    query
-    |> maybe_filter_type(command.type)
+    queryable
+    |> maybe_filter_type(type)
     |> Repo.one()
   end
 
-  defp fetch_variable_by_month(command) do
-    query =
+  defp get_transaction_totals_by_month(%GetProjectionsByMonthCommand{
+         user_id: user_id,
+         date_start: date_start,
+         date_end: date_end,
+         type: type
+       }) do
+    queryable =
       from(t in Transaction,
-        where: t.user_id == ^command.user_id,
+        where: t.user_id == ^user_id,
         where: is_nil(t.fixed_transaction_id),
-        where: t.date >= ^command.date_start,
-        where: t.date <= ^command.date_end,
+        where: t.date >= ^date_start,
+        where: t.date <= ^date_end,
         group_by: fragment("date_trunc('month', ?)", t.date),
         select: %{
           month: type(fragment("date_trunc('month', ?)", t.date), :date),
@@ -55,29 +64,20 @@ defmodule Core.Projection.Services.GetProjectionsByMonthService do
         }
       )
 
-    query
-    |> maybe_filter_type(command.type)
+    queryable
+    |> maybe_filter_type(type)
     |> Repo.all()
     |> Map.new(fn %{month: month, total_in_cents: total} -> {month, total} end)
   end
 
-  defp build_projections(date_start, date_end, fixed_total, variable_by_month),
-    do:
-      date_start
-      |> Date.beginning_of_month()
-      |> months_stream()
-      |> Stream.take_while(&before_or_on_end_month?(&1, date_end))
-      |> Enum.map(&project_month(&1, fixed_total, variable_by_month))
+  defp fill_missing_months(totals_by_month, date_start, date_end) do
+    start = Date.beginning_of_month(date_start)
+    stop = Date.beginning_of_month(date_end)
 
-  defp months_stream(start_month),
-    do: Stream.iterate(start_month, fn month -> Date.shift(month, month: 1) end)
-
-  defp before_or_on_end_month?(month, date_end),
-    do: Date.compare(month, Date.beginning_of_month(date_end)) != :gt
-
-  defp project_month(month, fixed_total, variable_by_month) do
-    variable_total = Map.get(variable_by_month, month, 0)
-    %{month: month, projected_in_cents: fixed_total + variable_total}
+    start
+    |> Stream.iterate(fn month -> Date.shift(month, month: 1) end)
+    |> Stream.take_while(fn month -> Date.compare(month, stop) != :gt end)
+    |> Map.new(fn month -> {month, Map.get(totals_by_month, month, 0)} end)
   end
 
   defp maybe_filter_type(queryable, nil), do: queryable
