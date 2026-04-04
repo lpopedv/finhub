@@ -12,7 +12,7 @@
 #
 ARG ELIXIR_VERSION=1.19.5
 ARG OTP_VERSION=28.3.1
-ARG DEBIAN_VERSION=trixie-20250908-slim
+ARG DEBIAN_VERSION=trixie-20260316-slim
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
@@ -86,7 +86,7 @@ WORKDIR "/app"
 RUN chown nobody /app
 
 # only copy the final release from the build stage
-COPY --from=builder --chown=nobody:root /app/_build/prod/rel/finhub_umbrella ./
+COPY --from=builder --chown=nobody:root /app/_build/prod/rel/finhub ./
 
 USER nobody
 
