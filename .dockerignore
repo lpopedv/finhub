@@ -1,0 +1,27 @@
+# Build artifacts
+_build/
+deps/
+
+# Version control
+.git/
+.github/
+
+# Documentation and coverage
+doc/
+cover/
+
+# Compiled beam files
+*.beam
+*.ez
+
+# Node modules in assets
+apps/*/assets/node_modules/
+
+# Local dev config and scripts
+.envrc
+config/localhost.env
+docker-compose.yml
+
+# Editor files
+.elixir_ls/
+.lexical/

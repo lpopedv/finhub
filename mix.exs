@@ -8,6 +8,7 @@ defmodule Finhub.Umbrella.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
+      releases: releases(),
       listeners: [Phoenix.CodeReloader],
       dialyzer: [plt_add_apps: [:mix]]
     ]
@@ -50,6 +51,18 @@ defmodule Finhub.Umbrella.MixProject do
   #
   # Aliases listed here are available only for this project
   # and cannot be accessed from applications inside the apps/ folder.
+  defp releases do
+    [
+      finhub: [
+        include_executables_for: [:unix],
+        applications: [
+          core: :permanent,
+          finhub_web: :permanent
+        ]
+      ]
+    ]
+  end
+
   defp aliases do
     [
       # run `mix setup` in all child apps

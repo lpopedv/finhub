@@ -11,6 +11,12 @@ config :finhub_web, FinhubWeb.Endpoint,
   http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
 if config_env() == :prod do
+  host = System.get_env("PHX_HOST") || raise "environment variable PHX_HOST is missing."
+
+  config :finhub_web, FinhubWeb.Endpoint,
+    server: true,
+    url: [host: host, port: 443, scheme: "https"]
+
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """
