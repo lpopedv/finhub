@@ -279,6 +279,21 @@ The final image runs as `nobody` (non-root).
 
 ---
 
+## CI / GitHub Actions
+
+The pipeline runs on every push and pull request to `main` with four parallel jobs:
+
+| Job | What it does |
+|---|---|
+| **Build** | Compiles dependencies and the app (`--warnings-as-errors`); saves `deps` and `_build` to cache |
+| **Lint** | Checks unused deps, code formatting, Credo (strict), and security audit (`hex.audit` + `deps.audit`) |
+| **Dialyzer** | Runs static type analysis; PLT is cached to avoid rebuilding on every run |
+| **Test** | Spins up a PostgreSQL 18 service container, runs migrations, and executes the full test suite |
+
+Lint and Test depend on the Build job's cache, so dependencies are compiled only once per run.
+
+---
+
 ## Running Tests
 
 ```bash
