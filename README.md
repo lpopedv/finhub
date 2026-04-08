@@ -1,5 +1,7 @@
 # Finhub
 
+> **Work in progress** — this project is under active development. Features and APIs may change.
+
 A personal finance web application built with Elixir and Phoenix LiveView. Track income and expenses, define recurring transactions, and get a clear picture of your monthly finances with projections and reports.
 
 ---
@@ -288,4 +290,7 @@ mix test --failed
 
 # Full pre-commit check: compile + format + test
 mix precommit
+
+# CI check: compile + format + credo + security audit + test
+mix ci
 ```
