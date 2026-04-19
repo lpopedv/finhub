@@ -1,3 +1,5 @@
 #!/bin/sh
 set -eu
-exec "${RELEASE_ROOT}/bin/finhub" start
+
+cd -P -- "$(dirname -- "$0")"
+exec ./finhub start
