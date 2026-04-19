@@ -1,3 +1,5 @@
 #!/bin/sh
 set -eu
-exec "${RELEASE_ROOT}/bin/finhub" eval "Core.Release.migrate()"
+
+cd -P -- "$(dirname -- "$0")"
+exec ./finhub eval "Core.Release.migrate()"

@@ -2,4 +2,5 @@
 set -eu
 
 cd -P -- "$(dirname -- "$0")"
+./finhub eval "Core.Release.migrate()"
 exec ./finhub start
