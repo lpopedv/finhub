@@ -13,15 +13,23 @@ defmodule Core.Schemas.Conversation do
   use Core.Schema
 
   alias Core.Schemas.AiAgent
+  alias Core.Schemas.Message
   alias Core.Schemas.User
 
   @required_params [:user_id]
-  @optional_params [:ai_agent_id, :title, :active, :last_message_at]
+  @optional_params [
+    :ai_agent_id,
+    :title,
+    :active,
+    :last_message_at,
+    :context_built_until_message_id
+  ]
 
   @type t :: %__MODULE__{
           id: Uniq.UUID.formatted(),
           user_id: Uniq.UUID.formatted(),
           ai_agent_id: Uniq.UUID.formatted() | nil,
+          context_built_until_message_id: Uniq.UUID.formatted() | nil,
           title: String.t() | nil,
           active: boolean(),
           last_message_at: DateTime.t() | nil,
@@ -36,6 +44,7 @@ defmodule Core.Schemas.Conversation do
 
     belongs_to :user, User
     belongs_to :ai_agent, AiAgent
+    belongs_to :context_built_until_message, Message, foreign_key: :context_built_until_message_id
 
     timestamps(type: :utc_datetime_usec)
   end
