@@ -23,7 +23,9 @@ defmodule Core.Audit.ActorTest do
       changeset = Actor.changeset(%{})
       refute changeset.valid?
 
-      assert "can't be blank" in Ecto.Changeset.traverse_errors(changeset, fn {msg, _} -> msg end).actor_id
+      assert "can't be blank" in Ecto.Changeset.traverse_errors(changeset, fn {msg, _opts} ->
+               msg
+             end).actor_id
     end
   end
 
