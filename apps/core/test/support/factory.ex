@@ -2,6 +2,7 @@ defmodule Core.Factory do
   use ExMachina.Ecto, repo: Core.Repo
 
   alias Core.Schemas.AiAgent
+  alias Core.Schemas.AiAgentPrompt
   alias Core.Schemas.Category
   alias Core.Schemas.FixedTransaction
   alias Core.Schemas.Transaction
@@ -12,6 +13,15 @@ defmodule Core.Factory do
       user: build(:user),
       name: sequence(:ai_agent_name, &"AI Agent #{&1}"),
       description: nil
+    }
+  end
+
+  def ai_agent_prompt_factory do
+    %AiAgentPrompt{
+      ai_agent: build(:ai_agent),
+      content: "You are a helpful financial assistant.",
+      version: 1,
+      active: false
     }
   end
 
