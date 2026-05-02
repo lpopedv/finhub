@@ -47,15 +47,28 @@ Business logic in `apps/core` follows a command/service pattern, organized by do
 
 ```
 apps/core/lib/core/
-  schemas/          # Ecto schemas (User, Category, Transaction)
+  schemas/          # Ecto schemas (User, Category, Transaction, FixedTransaction)
   <domain>/
     commands/       # Input structs (e.g., CreateTransactionCommand)
     services/       # Business logic modules with a single execute/1 function
+    workers/        # Oban workers (only in fixed_transaction domain)
 ```
 
 Each service module has one `execute/1` function that takes a command struct and returns `{:ok, result}` or `{:error, changeset}`.
 
 **Commands** use `Core.EmbeddedSchema` (not `Core.Schema`), which adds `build/1` and `build!/1` helpers. Commands have no primary key.
+
+### Domains
+
+| Domain | Commands | Services |
+|---|---|---|
+| `auth` | AuthenticateUserCommand | AuthenticateUserService |
+| `user` | CreateUserCommand | CreateUserService, DeleteUserService, ListUsersService, UpdateUserService |
+| `category` | CreateCategoryCommand | CreateCategoryService, DeleteCategoryService, ListCategoriesService, UpdateCategoryService |
+| `transaction` | CreateTransactionCommand, ListTransactionsCommand, GetTransactionsTotalsByMonthCommand | CreateTransactionService, DeleteTransactionService, ListTransactionsService, UpdateTransactionService, GetTransactionsTotalsByMonthService |
+| `fixed_transaction` | CreateFixedTransactionCommand | CreateFixedTransactionService, DeleteFixedTransactionService, ListFixedTransactionsService, UpdateFixedTransactionService + **ScheduleFixedTransactionsWorker** (Oban, daily 06:00 UTC) |
+| `dashboard` | — | GetDashboardSummaryService |
+| `projection` | GetProjectionsByMonthCommand | GetProjectionsByMonthService |
 
 ### Schemas
 
@@ -64,7 +77,13 @@ All schemas use `Core.Schema` (not `Ecto.Schema` directly), which sets:
 - `utc_datetime_usec` timestamps
 - UUID foreign key type
 
-Money values are stored as **integers in cents** to avoid floating-point issues.
+Money values are stored as **integers in cents** (`value_in_cents`) to avoid floating-point issues. Formatting to display strings happens only in the UI via `FinhubWeb.Helpers.Currency`.
+
+Transaction types are defined in `Core.TransactionType` as `:income` or `:expense`.
+
+### Background Jobs
+
+Oban 2.19 handles background jobs backed by PostgreSQL. The `ScheduleFixedTransactionsWorker` runs daily at 06:00 UTC on the `:default` queue (concurrency 10). When adding new workers, follow the idempotency pattern in that worker — check for existing records before inserting.
 
 ### Authentication
 
@@ -72,6 +91,7 @@ Money values are stored as **integers in cents** to avoid floating-point issues.
 - **`FinhubWeb.Live.Hooks.UserAuth`** — `on_mount` hook used on all authenticated LiveView routes; assigns `:current_user`
 - Session deletion broadcasts to `users_socket:#{user_id}` via PubSub to force LiveView disconnect on logout
 - Password hashing uses `Argon2` (`argon2_elixir`); test env uses reduced cost (`t_cost: 1, m_cost: 8`)
+- This project uses `@current_user`, not `current_scope` (ignore any `current_scope` references in AGENTS.md)
 
 ### Routes
 
@@ -81,14 +101,18 @@ POST /sign-in   → SessionController.create
 DEL  /sign-out  → SessionController.delete
 
 # Authenticated (RequireAuthPlug + UserAuth on_mount):
-GET /              → DashboardLive
-GET /categories    → CategoryLive.Index
-GET /transactions  → TransactionLive.Index
+GET /                    → DashboardLive
+GET /categories          → CategoryLive.Index
+GET /transactions        → TransactionLive.Index
+GET /fixed-transactions  → FixedTransactionLive.Index
+GET /monthly-report      → MonthlyReportLive
+GET /projections         → ProjectionLive
+GET /oban                → Oban job dashboard
 ```
 
 ### Web Layer
 
-`apps/finhub_web` calls `Core` services directly. The web layer should not contain business logic — delegate to services in `apps/core`.
+`apps/finhub_web` calls `Core` services directly. The web layer must not contain business logic — delegate to services in `apps/core`. Core has no HTTP or Phoenix dependencies.
 
 ## Key Conventions
 
@@ -116,15 +140,17 @@ See `AGENTS.md` for detailed Phoenix 1.8, LiveView, HEEx, and Ecto guidelines. K
 | Data table | `<.table id="..." rows={...}>` |
 | Data list (key/value) | `<.list>` |
 | Heroicon | `<.icon name="hero-...">` — never use `Heroicons` module |
-| Flash toast | `put_flash(socket, :info, "msg")` no `handle_event` — aparece automaticamente via `Layouts.app` |
+| Flash toast | `put_flash(socket, :info, "msg")` — appears automatically via `Layouts.app` |
+
+This project uses daisyUI for component styling (overrides the AGENTS.md note about avoiding it).
 
 ### Layouts
 
-- **Flash em LiveView**: o root layout NÃO é re-difado em `handle_event`. O `flash_group` está dentro de `Layouts.app`, que é re-renderizado a cada evento. Sempre passar `flash={@flash}` para `<Layouts.app flash={@flash}>`.
-- **Flash em controllers**: usar `<.flash kind={:error} flash={@flash} />` diretamente no template (ex: sign-in).
-- **Controller templates**: só o conteúdo — o root layout é aplicado automaticamente pelo pipeline
-- **LiveView templates**: iniciam com `<Layouts.app flash={@flash}>` (inclui nav e flash)
-- Para páginas sem nav (ex: sign-in): usar controller + template, sem `<Layouts.app>`
+- **Flash in LiveView**: the root layout is NOT re-diffed in `handle_event`. The `flash_group` is inside `Layouts.app`, which re-renders on every event. Always pass `flash={@flash}` to `<Layouts.app flash={@flash}>`.
+- **Flash in controllers**: use `<.flash kind={:error} flash={@flash} />` directly in the template (e.g. sign-in).
+- **Controller templates**: content only — the root layout is applied automatically by the pipeline
+- **LiveView templates**: start with `<Layouts.app flash={@flash}>` (includes nav and flash)
+- For pages without nav (e.g. sign-in): use controller + template, without `<Layouts.app>`
 
 ### Other
 
