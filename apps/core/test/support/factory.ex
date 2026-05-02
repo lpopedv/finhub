@@ -1,10 +1,19 @@
 defmodule Core.Factory do
   use ExMachina.Ecto, repo: Core.Repo
 
+  alias Core.Schemas.AiAgent
   alias Core.Schemas.Category
   alias Core.Schemas.FixedTransaction
   alias Core.Schemas.Transaction
   alias Core.Schemas.User
+
+  def ai_agent_factory do
+    %AiAgent{
+      user: build(:user),
+      name: sequence(:ai_agent_name, &"AI Agent #{&1}"),
+      description: nil
+    }
+  end
 
   def user_factory do
     %User{
