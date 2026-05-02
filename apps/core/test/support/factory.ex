@@ -5,6 +5,7 @@ defmodule Core.Factory do
   alias Core.Schemas.AiAgentPrompt
   alias Core.Schemas.Category
   alias Core.Schemas.Conversation
+  alias Core.Schemas.LlmUsageHistory
   alias Core.Schemas.Message
   alias Core.Schemas.FixedTransaction
   alias Core.Schemas.Transaction
@@ -24,6 +25,18 @@ defmodule Core.Factory do
       ai_agent: nil,
       title: nil,
       active: true
+    }
+  end
+
+  def llm_usage_history_factory do
+    %LlmUsageHistory{
+      user: build(:user),
+      conversation: build(:conversation),
+      message: build(:message),
+      model: "claude-sonnet-4-6",
+      input_tokens: 100,
+      cached_input_tokens: 0,
+      output_tokens: 200
     }
   end
 
