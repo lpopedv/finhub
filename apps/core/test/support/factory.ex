@@ -3,6 +3,7 @@ defmodule Core.Factory do
 
   alias Core.Schemas.AiAgent
   alias Core.Schemas.AiAgentPrompt
+  alias Core.Schemas.AuditLog
   alias Core.Schemas.Category
   alias Core.Schemas.Conversation
   alias Core.Schemas.LlmUsageHistory
@@ -10,6 +11,17 @@ defmodule Core.Factory do
   alias Core.Schemas.FixedTransaction
   alias Core.Schemas.Transaction
   alias Core.Schemas.User
+
+  def audit_log_factory do
+    %AuditLog{
+      actor: build(:user),
+      action: "ai_agent.create",
+      resource_type: "AiAgent",
+      resource_id: Ecto.UUID.generate(),
+      changes: nil,
+      metadata: nil
+    }
+  end
 
   def ai_agent_factory do
     %AiAgent{
