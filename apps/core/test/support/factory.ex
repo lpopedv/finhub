@@ -4,6 +4,7 @@ defmodule Core.Factory do
   alias Core.Schemas.AiAgent
   alias Core.Schemas.AiAgentPrompt
   alias Core.Schemas.Category
+  alias Core.Schemas.Conversation
   alias Core.Schemas.FixedTransaction
   alias Core.Schemas.Transaction
   alias Core.Schemas.User
@@ -13,6 +14,15 @@ defmodule Core.Factory do
       user: build(:user),
       name: sequence(:ai_agent_name, &"AI Agent #{&1}"),
       description: nil
+    }
+  end
+
+  def conversation_factory do
+    %Conversation{
+      user: build(:user),
+      ai_agent: nil,
+      title: nil,
+      active: true
     }
   end
 
