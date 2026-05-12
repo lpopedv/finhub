@@ -201,14 +201,11 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     end
 
     test "opens edit modal with existing data", %{conn: conn, user: user} do
-      insert(:transaction, user: user, name: "Aluguel", value_in_cents: 150_000)
+      transaction = insert(:transaction, user: user, name: "Aluguel", value_in_cents: 150_000)
 
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      html =
-        view
-        |> element("button", "Editar")
-        |> render_click()
+      html = render_click(view, "edit_transaction", %{"id" => transaction.id})
 
       assert html =~ "modal-open"
       assert html =~ "Editar Transação"
@@ -219,13 +216,11 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       conn: conn,
       user: user
     } do
-      insert(:transaction, user: user, name: "Aluguel", value_in_cents: 150_000)
+      transaction = insert(:transaction, user: user, name: "Aluguel", value_in_cents: 150_000)
 
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Editar")
-      |> render_click()
+      render_click(view, "edit_transaction", %{"id" => transaction.id})
 
       view
       |> form("form[phx-submit='save']", %{
@@ -242,13 +237,11 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     end
 
     test "shows validation error when trying to save blank name", %{conn: conn, user: user} do
-      insert(:transaction, user: user, name: "Aluguel", value_in_cents: 150_000)
+      transaction = insert(:transaction, user: user, name: "Aluguel", value_in_cents: 150_000)
 
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Editar")
-      |> render_click()
+      render_click(view, "edit_transaction", %{"id" => transaction.id})
 
       html =
         view
@@ -287,9 +280,11 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     end
 
     test "deletes transaction successfully and shows flash", %{conn: conn, user: user} do
-      insert(:transaction, user: user, name: "Aluguel")
+      transaction = insert(:transaction, user: user, name: "Aluguel")
 
       {:ok, view, _html} = live(conn, ~p"/transactions")
+
+      render_click(view, "request_delete", %{"id" => transaction.id})
 
       html =
         view
@@ -306,7 +301,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      html = render_click(view, "delete_transaction", %{"id" => outra_transacao.id})
+      html = render_click(view, "request_delete", %{"id" => outra_transacao.id})
 
       assert html =~ "Transação não encontrada."
     end

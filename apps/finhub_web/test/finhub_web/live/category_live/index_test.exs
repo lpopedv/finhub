@@ -162,14 +162,11 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
     end
 
     test "opens edit modal with existing data", %{conn: conn, user: user} do
-      insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
+      category = insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
-      html =
-        view
-        |> element("button", "Editar")
-        |> render_click()
+      html = render_click(view, "edit_category", %{"id" => category.id})
 
       assert html =~ "modal-open"
       assert html =~ "Editar Categoria"
@@ -177,13 +174,11 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
     end
 
     test "updates category successfully, shows flash and closes modal", %{conn: conn, user: user} do
-      insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
+      category = insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
-      view
-      |> element("button", "Editar")
-      |> render_click()
+      render_click(view, "edit_category", %{"id" => category.id})
 
       view
       |> form("form", %{
@@ -200,13 +195,11 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
     end
 
     test "shows validation error when trying to save blank name", %{conn: conn, user: user} do
-      insert(:category, user: user, name: "Alimentação")
+      category = insert(:category, user: user, name: "Alimentação")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
-      view
-      |> element("button", "Editar")
-      |> render_click()
+      render_click(view, "edit_category", %{"id" => category.id})
 
       html =
         view
@@ -262,9 +255,11 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
     end
 
     test "deletes category successfully and shows flash", %{conn: conn, user: user} do
-      insert(:category, user: user, name: "Alimentação")
+      category = insert(:category, user: user, name: "Alimentação")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
+
+      render_click(view, "request_delete", %{"id" => category.id})
 
       html =
         view
@@ -281,7 +276,7 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
-      html = render_click(view, "delete_category", %{"id" => outra_categoria.id})
+      html = render_click(view, "request_delete", %{"id" => outra_categoria.id})
 
       assert html =~ "Categoria não encontrada."
     end

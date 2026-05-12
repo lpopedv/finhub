@@ -185,19 +185,17 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
     end
 
     test "opens edit modal with existing data", %{conn: conn, user: user} do
-      insert(:fixed_transaction,
-        user: user,
-        name: "Netflix",
-        value_in_cents: 4_590,
-        day_of_month: 15
-      )
+      ft =
+        insert(:fixed_transaction,
+          user: user,
+          name: "Netflix",
+          value_in_cents: 4_590,
+          day_of_month: 15
+        )
 
       {:ok, view, _html} = live(conn, ~p"/fixed-transactions")
 
-      html =
-        view
-        |> element("button", "Editar")
-        |> render_click()
+      html = render_click(view, "edit_fixed_transaction", %{"id" => ft.id})
 
       assert html =~ "modal-open"
       assert html =~ "Editar Transação Fixa"
@@ -205,18 +203,17 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
     end
 
     test "updates successfully, shows flash and closes modal", %{conn: conn, user: user} do
-      insert(:fixed_transaction,
-        user: user,
-        name: "Netflix",
-        value_in_cents: 4_590,
-        day_of_month: 15
-      )
+      ft =
+        insert(:fixed_transaction,
+          user: user,
+          name: "Netflix",
+          value_in_cents: 4_590,
+          day_of_month: 15
+        )
 
       {:ok, view, _html} = live(conn, ~p"/fixed-transactions")
 
-      view
-      |> element("button", "Editar")
-      |> render_click()
+      render_click(view, "edit_fixed_transaction", %{"id" => ft.id})
 
       view
       |> form("form", %{
@@ -233,13 +230,11 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
     end
 
     test "shows validation error when trying to save blank name", %{conn: conn, user: user} do
-      insert(:fixed_transaction, user: user, name: "Netflix")
+      ft = insert(:fixed_transaction, user: user, name: "Netflix")
 
       {:ok, view, _html} = live(conn, ~p"/fixed-transactions")
 
-      view
-      |> element("button", "Editar")
-      |> render_click()
+      render_click(view, "edit_fixed_transaction", %{"id" => ft.id})
 
       html =
         view
@@ -270,9 +265,11 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
     end
 
     test "deletes successfully and shows flash", %{conn: conn, user: user} do
-      insert(:fixed_transaction, user: user, name: "Netflix")
+      ft = insert(:fixed_transaction, user: user, name: "Netflix")
 
       {:ok, view, _html} = live(conn, ~p"/fixed-transactions")
+
+      render_click(view, "request_delete", %{"id" => ft.id})
 
       html =
         view
@@ -289,7 +286,7 @@ defmodule FinhubWeb.FixedTransactionLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/fixed-transactions")
 
-      html = render_click(view, "delete_fixed_transaction", %{"id" => other_ft.id})
+      html = render_click(view, "request_delete", %{"id" => other_ft.id})
 
       assert html =~ "Transação fixa não encontrada."
     end

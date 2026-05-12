@@ -29,7 +29,7 @@ defmodule FinhubWeb.MonthlyReportLiveTest do
     test "shows empty state when user has no transactions", %{conn: conn} do
       {:ok, _view, html} = live(conn, ~p"/monthly-report")
 
-      assert html =~ "Nenhuma transação encontrada."
+      assert html =~ "Nenhuma transação registrada"
     end
 
     test "displays stat cards for months with transactions", %{conn: conn, user: user} do
@@ -113,7 +113,7 @@ defmodule FinhubWeb.MonthlyReportLiveTest do
         |> element("button", "Receitas")
         |> render_click()
 
-      assert html =~ "Nenhuma transação encontrada."
+      assert html =~ "Nenhuma transação registrada"
     end
   end
 end
