@@ -10,30 +10,54 @@ defmodule FinhubWeb.TransactionLive.FormComponent do
   def render(assigns) do
     ~H"""
     <dialog id="transaction-form-modal" class="modal modal-open">
-      <div class="modal-box">
-        <h3 class="text-lg font-semibold mb-4">
-          {if @action == :new, do: "Nova Transação", else: "Editar Transação"}
-        </h3>
+      <div class="modal-box max-w-lg">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="shrink-0 rounded-lg bg-primary/10 p-2.5">
+            <.icon name="hero-arrows-right-left" class="size-5 text-primary" />
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">
+              {if @action == :new, do: "Nova Transação", else: "Editar Transação"}
+            </h3>
+            <p class="text-sm text-base-content/50">
+              {if @action == :new,
+                do: "Preencha os dados da transação",
+                else: "Atualize os dados da transação"}
+            </p>
+          </div>
+        </div>
         <.form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
-          <.input field={@form[:name]} label="Nome" />
-          <.input field={@form[:date]} type="date" label="Data" />
-          <.input field={@form[:value_in_cents]} type="number" label="Valor (centavos)" />
-          <.input
-            field={@form[:type]}
-            type="select"
-            label="Tipo"
-            options={[{"Despesa", :expense}, {"Receita", :income}]}
-          />
-          <.input
-            field={@form[:category_id]}
-            type="select"
-            label="Categoria"
-            options={@category_options}
-            prompt="Sem categoria"
-          />
-          <div class="modal-action">
-            <.button type="button" phx-click="close_form">Cancelar</.button>
-            <.button type="submit" variant="primary">Salvar</.button>
+          <.input field={@form[:name]} label="Nome" placeholder="Ex: Supermercado" />
+          <div class="grid grid-cols-2 gap-x-4">
+            <.input field={@form[:date]} type="date" label="Data" />
+            <.input
+              field={@form[:type]}
+              type="select"
+              label="Tipo"
+              options={[{"Despesa", :expense}, {"Receita", :income}]}
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-x-4">
+            <.input
+              field={@form[:value_in_cents]}
+              type="number"
+              label="Valor em centavos"
+              placeholder="Ex: 5000"
+            />
+            <.input
+              field={@form[:category_id]}
+              type="select"
+              label="Categoria"
+              options={@category_options}
+              prompt="Sem categoria"
+            />
+          </div>
+          <div class="modal-action mt-6 pt-4 border-t border-base-300">
+            <.button type="button" class="btn btn-ghost" phx-click="close_form">Cancelar</.button>
+            <.button type="submit" variant="primary">
+              <.icon name="hero-check" class="size-4" />
+              {if @action == :new, do: "Criar Transação", else: "Salvar Alterações"}
+            </.button>
           </div>
         </.form>
       </div>

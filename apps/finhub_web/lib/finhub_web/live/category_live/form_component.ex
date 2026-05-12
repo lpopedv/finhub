@@ -10,16 +10,37 @@ defmodule FinhubWeb.CategoryLive.FormComponent do
   def render(assigns) do
     ~H"""
     <dialog id="category-form-modal" class="modal modal-open">
-      <div class="modal-box">
-        <h3 class="text-lg font-semibold mb-4">
-          {if @action == :new, do: "Nova Categoria", else: "Editar Categoria"}
-        </h3>
+      <div class="modal-box max-w-md">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="shrink-0 rounded-lg bg-primary/10 p-2.5">
+            <.icon name="hero-tag" class="size-5 text-primary" />
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">
+              {if @action == :new, do: "Nova Categoria", else: "Editar Categoria"}
+            </h3>
+            <p class="text-sm text-base-content/50">
+              {if @action == :new,
+                do: "Preencha os dados da nova categoria",
+                else: "Atualize os dados da categoria"}
+            </p>
+          </div>
+        </div>
         <.form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
-          <.input field={@form[:name]} label="Nome" />
-          <.input field={@form[:description]} label="Descrição" />
-          <div class="modal-action">
-            <.button type="button" phx-click="close_form">Cancelar</.button>
-            <.button type="submit" variant="primary">Salvar</.button>
+          <.input field={@form[:name]} label="Nome" placeholder="Ex: Alimentação" />
+          <.input
+            field={@form[:description]}
+            type="textarea"
+            label="Descrição"
+            placeholder="Descreva esta categoria (opcional)"
+            rows="3"
+          />
+          <div class="modal-action mt-6 pt-4 border-t border-base-300">
+            <.button type="button" class="btn btn-ghost" phx-click="close_form">Cancelar</.button>
+            <.button type="submit" variant="primary">
+              <.icon name="hero-check" class="size-4" />
+              {if @action == :new, do: "Criar Categoria", else: "Salvar Alterações"}
+            </.button>
           </div>
         </.form>
       </div>

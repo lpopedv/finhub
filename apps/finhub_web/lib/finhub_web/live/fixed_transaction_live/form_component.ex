@@ -10,30 +10,65 @@ defmodule FinhubWeb.FixedTransactionLive.FormComponent do
   def render(assigns) do
     ~H"""
     <dialog id="fixed-transaction-form-modal" class="modal modal-open">
-      <div class="modal-box">
-        <h3 class="text-lg font-semibold mb-4">
-          {if @action == :new, do: "Nova Transação Fixa", else: "Editar Transação Fixa"}
-        </h3>
+      <div class="modal-box max-w-lg">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="shrink-0 rounded-lg bg-primary/10 p-2.5">
+            <.icon name="hero-arrow-path" class="size-5 text-primary" />
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">
+              {if @action == :new, do: "Nova Transação Fixa", else: "Editar Transação Fixa"}
+            </h3>
+            <p class="text-sm text-base-content/50">
+              {if @action == :new,
+                do: "Preencha os dados da transação recorrente",
+                else: "Atualize os dados da transação recorrente"}
+            </p>
+          </div>
+        </div>
         <.form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
-          <.input field={@form[:name]} label="Nome" />
-          <.input field={@form[:day_of_month]} type="number" label="Dia do Mês" />
-          <.input field={@form[:value_in_cents]} type="number" label="Valor (centavos)" />
+          <.input field={@form[:name]} label="Nome" placeholder="Ex: Aluguel" />
+          <div class="grid grid-cols-2 gap-x-4">
+            <.input
+              field={@form[:type]}
+              type="select"
+              label="Tipo"
+              options={[{"Despesa", :expense}, {"Receita", :income}]}
+            />
+            <.input
+              field={@form[:day_of_month]}
+              type="number"
+              label="Dia do mês"
+              placeholder="Ex: 5"
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-x-4">
+            <.input
+              field={@form[:value_in_cents]}
+              type="number"
+              label="Valor em centavos"
+              placeholder="Ex: 150000"
+            />
+            <.input
+              field={@form[:category_id]}
+              type="select"
+              label="Categoria"
+              options={@category_options}
+              prompt="Sem categoria"
+            />
+          </div>
           <.input
-            field={@form[:type]}
-            type="select"
-            label="Tipo"
-            options={[{"Despesa", :expense}, {"Receita", :income}]}
+            :if={@action == :edit}
+            field={@form[:active]}
+            type="checkbox"
+            label="Transação ativa"
           />
-          <.input
-            field={@form[:category_id]}
-            type="select"
-            label="Categoria"
-            options={@category_options}
-            prompt="Sem categoria"
-          />
-          <div class="modal-action">
-            <.button type="button" phx-click="close_form">Cancelar</.button>
-            <.button type="submit" variant="primary">Salvar</.button>
+          <div class="modal-action mt-6 pt-4 border-t border-base-300">
+            <.button type="button" class="btn btn-ghost" phx-click="close_form">Cancelar</.button>
+            <.button type="submit" variant="primary">
+              <.icon name="hero-check" class="size-4" />
+              {if @action == :new, do: "Criar Transação", else: "Salvar Alterações"}
+            </.button>
           </div>
         </.form>
       </div>
