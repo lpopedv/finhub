@@ -62,10 +62,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
       {:ok, view, initial_html} = live(conn, ~p"/transactions")
       refute initial_html =~ "modal-open"
 
-      html =
-        view
-        |> element("button", "Nova Transação")
-        |> render_click()
+      html = render_click(view, "new_transaction")
 
       assert html =~ "modal-open"
       assert html =~ "Nova Transação"
@@ -74,9 +71,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     test "closes modal on Cancelar click", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Nova Transação")
-      |> render_click()
+      render_click(view, "new_transaction")
 
       html =
         view
@@ -89,9 +84,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     test "shows validation error when name is blank", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Nova Transação")
-      |> render_click()
+      render_click(view, "new_transaction")
 
       html =
         view
@@ -106,9 +99,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     test "creates transaction successfully, shows flash and closes modal", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Nova Transação")
-      |> render_click()
+      render_click(view, "new_transaction")
 
       view
       |> form("form[phx-submit='save']", %{
@@ -132,9 +123,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     test "validates in real time while typing", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Nova Transação")
-      |> render_click()
+      render_click(view, "new_transaction")
 
       html =
         view
@@ -151,9 +140,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
 
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Nova Transação")
-      |> render_click()
+      render_click(view, "new_transaction")
 
       view
       |> form("form[phx-submit='save']", %{
@@ -173,9 +160,7 @@ defmodule FinhubWeb.TransactionLive.IndexTest do
     test "creates transaction without category (prompt vazio)", %{conn: conn} do
       {:ok, view, _html} = live(conn, ~p"/transactions")
 
-      view
-      |> element("button", "Nova Transação")
-      |> render_click()
+      render_click(view, "new_transaction")
 
       view
       |> form("form[phx-submit='save']", %{

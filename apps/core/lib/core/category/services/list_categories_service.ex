@@ -10,7 +10,7 @@ defmodule Core.Category.Services.ListCategoriesService do
   alias Core.Repo
   alias Core.Schemas.Category
 
-  @spec execute(String.t()) :: {:ok, [Category.t()]}
+  @spec execute(String.t()) :: [Category.t()]
   def execute(user_id) do
     queryable =
       from(c in Category,

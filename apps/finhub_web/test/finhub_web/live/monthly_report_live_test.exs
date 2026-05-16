@@ -38,7 +38,7 @@ defmodule FinhubWeb.MonthlyReportLiveTest do
 
       {:ok, _view, html} = live(conn, ~p"/monthly-report")
 
-      refute html =~ "Nenhuma transação encontrada."
+      refute html =~ "Nenhuma transação registrada"
       assert html =~ "R$ 500,00"
     end
 
@@ -48,7 +48,7 @@ defmodule FinhubWeb.MonthlyReportLiveTest do
 
       {:ok, _view, html} = live(conn, ~p"/monthly-report")
 
-      assert html =~ "Nenhuma transação encontrada."
+      assert html =~ "Nenhuma transação registrada"
     end
 
     test "filter by expense shows only expense totals", %{conn: conn, user: user} do

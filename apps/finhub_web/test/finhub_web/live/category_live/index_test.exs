@@ -162,7 +162,8 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
     end
 
     test "opens edit modal with existing data", %{conn: conn, user: user} do
-      category = insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
+      category =
+        insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
@@ -174,7 +175,8 @@ defmodule FinhubWeb.CategoryLive.IndexTest do
     end
 
     test "updates category successfully, shows flash and closes modal", %{conn: conn, user: user} do
-      category = insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
+      category =
+        insert(:category, user: user, name: "Alimentação", description: "Gastos com comida")
 
       {:ok, view, _html} = live(conn, ~p"/categories")
 
