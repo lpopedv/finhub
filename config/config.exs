@@ -66,7 +66,7 @@ config :logger, :default_formatter,
 # Configure Oban
 config :core, Oban,
   repo: Core.Repo,
-  queues: [default: 10],
+  queues: [default: 10, ai: 5],
   plugins: [
     Oban.Plugins.Pruner,
     {Oban.Plugins.Cron,
