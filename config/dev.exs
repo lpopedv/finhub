@@ -86,6 +86,11 @@ config :phoenix_live_view,
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 
+config :core, Core.Adapters.Conversation.GenerateResponsePort.OpenRouter,
+  api_key: System.get_env("OPENROUTER_API_KEY"),
+  model: System.get_env("OPENROUTER_MODEL", "openai/gpt-4o-mini"),
+  timeout: 120_000
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20

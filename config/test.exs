@@ -29,6 +29,15 @@ config :argon2_elixir, t_cost: 1, m_cost: 8
 # Disable Oban in tests
 config :core, Oban, testing: :manual
 
+config :core, Core.Conversation.Ports.GenerateResponsePort,
+  adapter: Core.Adapters.Conversation.GenerateResponsePort.Stub
+
+config :core, Core.Adapters.Conversation.GenerateResponsePort.OpenRouter,
+  api_key: "test-api-key",
+  model: "test/model",
+  timeout: 5_000,
+  plug: {Req.Test, Core.Adapters.Conversation.GenerateResponsePort.OpenRouter}
+
 # In test we don't send emails
 config :core, Core.Mailer, adapter: Swoosh.Adapters.Test
 

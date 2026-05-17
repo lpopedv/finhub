@@ -66,7 +66,7 @@ config :logger, :default_formatter,
 # Configure Oban
 config :core, Oban,
   repo: Core.Repo,
-  queues: [default: 10],
+  queues: [default: 10, ai: 5],
   plugins: [
     Oban.Plugins.Pruner,
     {Oban.Plugins.Cron,
@@ -74,6 +74,10 @@ config :core, Oban,
        {"0 6 * * *", Core.FixedTransaction.Workers.ScheduleFixedTransactionsWorker}
      ]}
   ]
+
+# Configure AI port adapter
+config :core, Core.Conversation.Ports.GenerateResponsePort,
+  adapter: Core.Adapters.Conversation.GenerateResponsePort.OpenRouter
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

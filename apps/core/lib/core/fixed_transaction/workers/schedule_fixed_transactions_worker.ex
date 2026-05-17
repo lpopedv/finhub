@@ -54,12 +54,14 @@ defmodule Core.FixedTransaction.Workers.ScheduleFixedTransactionsWorker do
     start_date = Date.beginning_of_month(date)
     end_date = Date.end_of_month(date)
 
-    Repo.exists?(
-      from t in Transaction,
+    queryable =
+      from(t in Transaction,
         where:
           t.fixed_transaction_id == ^ft_id and
             t.date >= ^start_date and
             t.date <= ^end_date
-    )
+      )
+
+    Repo.exists?(queryable)
   end
 end
