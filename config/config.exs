@@ -75,6 +75,10 @@ config :core, Oban,
      ]}
   ]
 
+# Configure AI port adapter
+config :core, Core.Conversation.Ports.GenerateResponsePort,
+  adapter: Core.Adapters.Conversation.GenerateResponsePort.OpenRouter
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 

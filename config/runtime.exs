@@ -115,4 +115,11 @@ if config_env() == :prod do
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 
   config :core, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+
+  config :core, Core.Adapters.Conversation.GenerateResponsePort.OpenRouter,
+    api_key:
+      System.get_env("OPENROUTER_API_KEY") ||
+        raise("environment variable OPENROUTER_API_KEY is missing."),
+    model: System.get_env("OPENROUTER_MODEL", "openai/gpt-4o-mini"),
+    timeout: 120_000
 end
